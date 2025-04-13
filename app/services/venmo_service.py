@@ -1,5 +1,5 @@
 from typing import Protocol, List, Optional
-import aiohttp
+import httpx
 from app.models.config import VenmoConfig
 
 class VenmoService(Protocol):
@@ -22,16 +22,16 @@ class VenmoAPIService(VenmoService):
     
     def __init__(self, config: VenmoConfig):
         self.config = config
-        self._session = None
+        self._client = None
     
     async def __connect__(self):
-        """Initialize aiohttp session"""
-        self._session = aiohttp.ClientSession()
+        """Initialize httpx client"""
+        self._client = httpx.AsyncClient()
     
     async def __disconnect__(self):
-        """Cleanup aiohttp session"""
-        if self._session:
-            await self._session.close()
+        """Cleanup httpx client"""
+        if self._client:
+            await self._client.aclose()
     
     async def request_payment(self, user_id: str, amount: float, note: str) -> bool:
         """
@@ -45,14 +45,14 @@ class VenmoAPIService(VenmoService):
         Returns:
             bool: True if request was successful, False otherwise
         """
-        if not self._session:
+        if not self._client:
             raise RuntimeError("Venmo client not initialized")
         
         # Convert amount to negative for payment request
         request_amount = -abs(amount)
         
         try:
-            async with self._session.post(
+            response = await self._client.post(
                 "https://api.venmo.com/v1/payments",
                 headers={
                     "Authorization": f"Bearer {self.config.access_token}",
@@ -64,21 +64,22 @@ class VenmoAPIService(VenmoService):
                     "note": note,
                     "audience": "private"  # Keep requests private by default
                 }
-            ) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    return data.get("data", {}).get("payment", {}).get("status") == "pending"
-                else:
-                    error_data = await response.json()
-                    raise VenmoAPIError(f"Venmo API error: {error_data}")
-        except aiohttp.ClientError as e:
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                return data.get("data", {}).get("payment", {}).get("status") == "pending"
+            else:
+                error_data = response.json()
+                raise VenmoAPIError(f"Venmo API error: {error_data}")
+        except httpx.HTTPError as e:
             raise VenmoAPIError(f"Network error: {str(e)}")
         except Exception as e:
             raise VenmoAPIError(f"Unexpected error: {str(e)}")
     
     async def get_user_id(self, username: str) -> Optional[str]:
         """Get Venmo user ID from username"""
-        if not self._session:
+        if not self._client:
             raise RuntimeError("Venmo client not initialized")
         
         try:
@@ -90,7 +91,7 @@ class VenmoAPIService(VenmoService):
     
     async def get_pending_requests(self) -> List[dict]:
         """Get list of pending payment requests"""
-        if not self._session:
+        if not self._client:
             raise RuntimeError("Venmo client not initialized")
         
         try:
