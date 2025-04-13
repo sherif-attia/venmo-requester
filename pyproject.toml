@@ -25,4 +25,47 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = "-v --cov=app --cov-report=term-missing"
+addopts = [
+    "-v",
+    "--cov",
+    "--cov-branch",
+    "--cov-report=term-missing",
+    "--cov-report=html:.test_coverage/coverage_html",
+    "--cov-report=json:.test_coverage/coverage.json",
+    "--cov-report=lcov:.test_coverage/coverage.lcov",
+    "--cov-report=xml:.test_coverage/coverage.xml",
+]
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.coverage.run]
+data_file = ".test_coverage/.coverage"
+branch = true
+source = ["app/"]
+
+[tool.ruff]
+line-length = 100
+indent-width = 4
+
+[tool.ruff.lint]
+select = [
+    # https://docs.astral.sh/ruff/rules/
+    "I",  # isort
+    "F",  # pyflakes
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "C4", # flake8-comprehensions
+    "Q",  # flake8-quotes
+    "N",  # pep8-naming
+    "PL", # Pylint
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"

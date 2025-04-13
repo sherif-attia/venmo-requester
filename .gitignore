@@ -3,3 +3,18 @@
 
 # Python virtual environment directory
 .venv/
+
+# Google Sheets credentials
+credentials.json
+
+# Python cache
+__pycache__/
+
+# Coverage reports
+.coverage
+
+# Pytest cache
+.pytest_cache/
+
+# Ruff cache
+.ruff_cache/
