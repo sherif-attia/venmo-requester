@@ -1,0 +1,10 @@
+[project]
+name = "venmo-auto-request"
+version = "0.1.0"
+description = "auto request money from friends"
+readme = "docs/readme.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pydantic>=2.11.3",
+    "yagmail[all]>=0.15.293",
+]

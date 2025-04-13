@@ -1,2 +1,0 @@
-# venmo-auto-request
- 
