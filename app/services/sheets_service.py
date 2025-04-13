@@ -1,6 +1,6 @@
 from typing import Protocol, List
 from google.oauth2.credentials import Credentials
-from google.oauth2 import service_account
+from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
@@ -8,29 +8,69 @@ from app.models.payment import PaymentRequest
 from app.models.config import GoogleSheetsConfig
 
 class SheetsService(Protocol):
-    """Protocol defining the interface for sheet services"""
-    def get_payment_requests(self) -> List[PaymentRequest]: ...
+    """
+    Interface defining the contract for Google Sheets service implementations.
+    
+    This protocol ensures that any implementation of the sheets service
+    must provide these methods with the specified signatures.
+    """
+    
+    async def get_payment_requests(self) -> List[PaymentRequest]:
+        """
+        Get a list of payment requests from the spreadsheet.
+        
+        Returns:
+            List of PaymentRequest objects containing request data
+        """
+        ...
 
 class GoogleSheetsService:
-    """Service for interacting with Google Sheets"""
+    """
+    Implementation of SheetsService using Google Sheets API.
+    
+    This service handles:
+    1. Authentication with Google Sheets API
+    2. Reading data from the spreadsheet
+    3. Error handling for API operations
+    """
     
     def __init__(self, config: GoogleSheetsConfig):
+        """
+        Initialize the Google Sheets service.
+        
+        Args:
+            config: Google Sheets configuration containing credentials and spreadsheet ID
+        """
         self.config = config
-        self._service = self._build_service()
-
-    def _build_service(self):
-        """Build the Google Sheets service"""
         try:
-            creds = service_account.Credentials.from_service_account_file(
+            creds = ServiceAccountCredentials.from_service_account_file(
                 self.config.credentials_path,
-                scopes=['https://www.googleapis.com/auth/spreadsheets.readonly']
+                scopes=["https://www.googleapis.com/auth/spreadsheets.readonly"]
             )
-            return build('sheets', 'v4', credentials=creds)
+            self._service = build("sheets", "v4", credentials=creds)
         except Exception as e:
-            raise RuntimeError(f"Failed to build Google Sheets service: {str(e)}")
-
-    def get_payment_requests(self) -> List[PaymentRequest]:
-        """Fetch payment requests from the configured spreadsheet"""
+            raise RuntimeError(f"Failed to initialize Google Sheets service: {str(e)}")
+    
+    async def get_payment_requests(self) -> List[PaymentRequest]:
+        """
+        Get a list of payment requests from the spreadsheet.
+        
+        This method:
+        1. Reads data from the configured spreadsheet
+        2. Parses the data into PaymentRequest objects
+        3. Filters for pending requests
+        
+        Returns:
+            List of PaymentRequest objects containing:
+            - user_id: Venmo user ID
+            - amount: Payment amount
+            - note: Payment note
+            - status: Request status
+            
+        Raises:
+            RuntimeError: If the service is not initialized
+            HttpError: If there's an error with the Google Sheets API
+        """
         try:
             # Get the values from the first sheet
             result = self._service.spreadsheets().values().get(
@@ -38,7 +78,7 @@ class GoogleSheetsService:
                 range='A:C'  # Columns A (venmo_id), B (note), C (amount)
             ).execute()
             
-            values = result.get('values', [])
+            values = result.get("values", [])
             if not values:
                 return []
 
