@@ -1,2 +1,5 @@
+# .env contains sensitive configuration and secrets
 .env
+
+# Python virtual environment directory
 .venv/
