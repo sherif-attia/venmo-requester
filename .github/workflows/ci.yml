@@ -14,10 +14,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python environment
-        uses: ../actions/setup-python
+        uses: ./.github/actions/setup-python
 
       - name: Lint code
-        uses: ../actions/lint
+        uses: ./.github/actions/lint
 
   test:
     needs: [lint]
@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python environment
-        uses: ../actions/setup-python
+        uses: ./.github/actions/setup-python
 
       - name: Run tests
-        uses: ../actions/test
+        uses: ./.github/actions/test
