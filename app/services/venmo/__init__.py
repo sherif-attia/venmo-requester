@@ -1,5 +1,6 @@
-from typing import Protocol, List, Optional
-from app.models.payment import PaymentRequest
+from typing import Protocol
+from decimal import Decimal
+from app.models.payment import PaymentRequest, PaymentResult
 
 class IVenmoService(Protocol):
     """
@@ -23,7 +24,7 @@ class IVenmoService(Protocol):
         """
         ...
     
-    async def get_user_id(self, username: str) -> Optional[str]:
+    async def get_user_id(self, username: str) -> str | None:
         """
         Get Venmo user ID from username.
         
@@ -31,16 +32,16 @@ class IVenmoService(Protocol):
             username: The Venmo username to look up
             
         Returns:
-            Optional[str]: The user ID if found, None otherwise
+            str | None: The user ID if found, None otherwise
         """
         ...
     
-    async def get_pending_requests(self) -> List[dict]:
+    async def get_pending_requests(self) -> list[dict]:
         """
         Get list of pending payment requests.
         
         Returns:
-            List[dict]: List of pending payment requests
+            list[dict]: List of pending payment requests
         """
         ...
 

@@ -19,7 +19,7 @@ class IEmailService(Protocol):
         """
         ...
         
-    def send_success_report(self, payments: List[PaymentRequest]) -> None:
+    def send_success_report(self, payments: list[PaymentRequest]) -> None:
         """
         Send a report of successful payment requests.
         

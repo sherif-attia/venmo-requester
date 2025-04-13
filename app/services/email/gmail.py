@@ -1,7 +1,6 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from typing import List
 
 from app.models.config import EmailConfig
 from app.models.payment import PaymentRequest
@@ -72,7 +71,7 @@ class GmailService:
         except Exception as e:
             raise RuntimeError(f"Failed to send error notification email: {str(e)}")
             
-    def send_success_report(self, payments: List[PaymentRequest]) -> None:
+    def send_success_report(self, payments: list[PaymentRequest]) -> None:
         """
         Send a report of successful payment requests using Gmail SMTP.
         
