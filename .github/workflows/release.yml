@@ -14,43 +14,23 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          persist-credentials: false
+          token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "lts/*"
+      - name: Setup Python Environment
+        uses: ./.github/actions/setup-python
 
-      - name: Install dependencies
-        run: npm install -g semantic-release @semantic-release/git @semantic-release/github @semantic-release/changelog @semantic-release/commit-analyzer @semantic-release/release-notes-generator
+      - name: Install semantic-release
+        run: uv pip install python-semantic-release
+        shell: bash
 
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SEMANTIC_RELEASE_CONFIG: |
-            {
-              "branches": ["main"],
-              "plugins": [
-                "@semantic-release/commit-analyzer",
-                "@semantic-release/release-notes-generator",
-                ["@semantic-release/changelog", {
-                  "changelogFile": "CHANGELOG.md"
-                }],
-                ["@semantic-release/github", {
-                  "assets": [],
-                  "successComment": "🎉 This change is included in version ${nextRelease.version}",
-                  "failTitle": "The release failed",
-                  "failComment": "The release failed. Please check the workflow run for details.",
-                  "labels": ["released"]
-                }],
-                ["@semantic-release/git", {
-                  "assets": ["CHANGELOG.md", "pyproject.toml"],
-                  "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
-                }]
-              ]
-            }
+      - name: Configure Git
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          echo "$SEMANTIC_RELEASE_CONFIG" > .releaserc.json
-          semantic-release
+
+      - name: Release
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          semantic-release version
+          semantic-release publish
