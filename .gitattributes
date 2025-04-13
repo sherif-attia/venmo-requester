@@ -1,0 +1,3 @@
+# Force LF (Unix-style) line endings for all files
+# This ensures consistent line endings across all platforms
+* text eol=lf
