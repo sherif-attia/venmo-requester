@@ -41,7 +41,7 @@ addopts = [
 [tool.coverage.run]
 data_file = ".test_coverage/.coverage"
 branch = true
-source = ["app/"]
+source = ["app"]
 
 [tool.ruff]
 line-length = 100
