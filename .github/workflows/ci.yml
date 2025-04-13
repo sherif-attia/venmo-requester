@@ -32,17 +32,18 @@ jobs:
         with:
           name: workspace
           path: ${{ github.workspace }}
-          retention-days: 1
+          include-hidden-files: true
+          if-no-files-found: error
 
   lint:
     needs: [setup]
     runs-on: ubuntu-latest
     steps:
-      # - name: Download workspace
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: workspace
-      #     path: ${{ github.workspace }}
+      - name: Download workspace
+        uses: actions/download-artifact@v4
+        with:
+          name: workspace
+          path: ${{ github.workspace }}
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
