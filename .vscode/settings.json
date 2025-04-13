@@ -23,7 +23,6 @@
     "**/__pycache__": true,
     "**/.pytest_cache": true,
     "**/.test_coverage": true,
-    "**/.coverage": true,
     "**/.ruff_cache": true
   },
 
