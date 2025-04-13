@@ -27,18 +27,42 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
+      - name: Cache Python environment
+        uses: actions/cache@v4
+        with:
+          path: |
+            .venv
+            __pycache__
+          key: ${{ runner.os }}-python-${{ hashFiles('**/uv.lock') }}
+
   lint:
-    needs: setup
+    needs: [setup]
     runs-on: ubuntu-latest
     steps:
+      - name: Restore Python environment
+        uses: actions/cache@v4
+        with:
+          path: |
+            .venv
+            __pycache__
+          key: ${{ runner.os }}-python-${{ hashFiles('**/uv.lock') }}
+
       - name: Lint code
         run: |
           uv run ruff check --output-format=github
 
   test:
-    needs: setup
+    needs: [setup, lint]
     runs-on: ubuntu-latest
     steps:
+      - name: Restore Python environment
+        uses: actions/cache@v4
+        with:
+          path: |
+            .venv
+            __pycache__
+          key: ${{ runner.os }}-python-${{ hashFiles('**/uv.lock') }}
+
       - name: Run tests
         run: |
           uv run pytest
