@@ -1,7 +1,6 @@
 from pydantic import BaseModel, EmailStr, FilePath, SecretStr
 
 
-
 class VenmoConfig(BaseModel):
     """
     Configuration for Venmo API access.
