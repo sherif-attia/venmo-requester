@@ -8,6 +8,7 @@ from app.models.config import AppConfig, VenmoConfig, EmailConfig, GoogleSheetsC
 from app.services.container import ServiceContainer
 from app.services.email_service import EmailService
 from app.services.sheets_service import SheetsService
+from app.services.venmo_service import VenmoService
 
 # Load environment variables
 load_dotenv()
@@ -39,7 +40,7 @@ async def main():
 
     try:
         # Load configuration
-        config = AppConfig.load()
+        config = create_config()
         
         # Create and connect service container
         container = ServiceContainer(config)
@@ -48,9 +49,26 @@ async def main():
         # Get services from container
         email_service = container.email_service
         sheets_service = container.sheets_service
+        venmo_service = container.venmo_service
         
-        # TODO: Implement payment processing
-        logger.info("Starting payment processing...")
+        # Example: Process pending requests
+        pending_requests = await venmo_service.get_pending_requests()
+        logger.info(f"Found {len(pending_requests)} pending requests")
+        
+        for request in pending_requests:
+            try:
+                success = await venmo_service.request_payment(
+                    user_id=request['user_id'],
+                    amount=request['amount'],
+                    note=request['note']
+                )
+                if success:
+                    logger.info(f"Successfully requested payment from {request['user_id']}")
+                else:
+                    logger.warning(f"Failed to request payment from {request['user_id']}")
+            except Exception as e:
+                logger.error(f"Error processing request for {request['user_id']}: {str(e)}")
+                email_service.send_error_notification(e, f"processing request for {request['user_id']}")
 
     except Exception as e:
         logger.error(f"Error in main: {str(e)}")

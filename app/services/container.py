@@ -3,6 +3,7 @@ from magic_di import Connectable, DependencyInjector
 from app.models.config import AppConfig
 from app.services.email_service import EmailService, GmailService
 from app.services.sheets_service import SheetsService, GoogleSheetsService
+from app.services.venmo_service import VenmoService, VenmoAPIService
 
 class ServiceContainer(Connectable):
     """Container for managing service instances"""
@@ -12,7 +13,8 @@ class ServiceContainer(Connectable):
         self._injector = DependencyInjector()
         self._injector.bind({
             EmailService: GmailService,
-            SheetsService: GoogleSheetsService
+            SheetsService: GoogleSheetsService,
+            VenmoService: VenmoAPIService
         })
 
     async def __connect__(self):
@@ -29,4 +31,9 @@ class ServiceContainer(Connectable):
     @property
     def sheets_service(self) -> SheetsService:
         """Get the sheets service instance"""
-        return self._injector.inject(SheetsService)(self.config.google_sheets) 
+        return self._injector.inject(SheetsService)(self.config.google_sheets)
+        
+    @property
+    def venmo_service(self) -> VenmoService:
+        """Get the Venmo service instance"""
+        return self._injector.inject(VenmoService)(self.config.venmo) 
