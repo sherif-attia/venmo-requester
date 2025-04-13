@@ -5,18 +5,24 @@ description = "auto request money from friends"
 readme = "docs/readme.md"
 requires-python = ">=3.13"
 dependencies = [
+    "google-api-python-client>=2.166.0",
+    "google-auth>=2.38.0",
+    "google-auth-oauthlib>=1.2.1",
+    "magic-di>=0.3.0",
     "pydantic>=2.11.3",
+    "python-dotenv>=1.1.0",
     "yagmail[all]>=0.15.293",
-    "google-auth>=2.27.0",
-    "google-auth-oauthlib>=1.2.0",
-    "google-api-python-client>=2.118.0",
-    "python-dotenv>=1.0.0",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
-    "pytest>=8.0.0",
-    "pytest-cov>=4.1.0",
-    "pytest-mock>=3.12.0",
-    "ruff>=0.2.1",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+    "pytest-mock>=3.14.0",
+    "ruff>=0.11.5",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --cov=app --cov-report=term-missing"
