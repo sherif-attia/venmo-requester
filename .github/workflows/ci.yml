@@ -27,52 +27,38 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
-      - name: Cache environment
-        uses: actions/cache@v4
+      - name: Upload environment and code
+        uses: actions/upload-artifact@v4
         with:
+          name: workspace
           path: |
-            .venv
-            __pycache__
-            ~/.local/bin/uv
-            ~/.local/lib/python3.*/site-packages/uv
-          key: ${{ runner.os }}-python-${{ hashFiles('**/uv.lock') }}
+            .
+          retention-days: 1
 
   lint:
     needs: [setup]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Restore environment
-        uses: actions/cache@v4
+      - name: Download workspace
+        uses: actions/download-artifact@v4
         with:
-          path: |
-            .venv
-            __pycache__
-            ~/.local/bin/uv
-            ~/.local/lib/python3.*/site-packages/uv
-          key: ${{ runner.os }}-python-${{ hashFiles('**/uv.lock') }}
+          name: workspace
+          path: .
 
       - name: Lint code
         run: |
-          ~/.local/bin/uv run ruff check --output-format=github
+          uv run ruff check --output-format=github
 
   test:
     needs: [setup, lint]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Restore environment
-        uses: actions/cache@v4
+      - name: Download workspace
+        uses: actions/download-artifact@v4
         with:
-          path: |
-            .venv
-            __pycache__
-            ~/.local/bin/uv
-            ~/.local/lib/python3.*/site-packages/uv
-          key: ${{ runner.os }}-python-${{ hashFiles('**/uv.lock') }}
+          name: workspace
+          path: .
 
       - name: Run tests
         run: |
-          ~/.local/bin/uv run pytest
+          uv run pytest
