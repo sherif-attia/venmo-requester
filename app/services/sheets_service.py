@@ -7,36 +7,36 @@ from googleapiclient.errors import HttpError
 from app.models.payment import PaymentRequest
 from app.models.config import GoogleSheetsConfig
 
-class ISheetsService(Protocol):
+class IPaymentRequestRepository(Protocol):
     """
-    Interface defining the contract for Google Sheets service implementations.
+    Repository interface for payment request data access.
     
-    This protocol ensures that any implementation of the sheets service
-    must provide these methods with the specified signatures.
+    This protocol defines the contract for accessing payment request data,
+    abstracting away the specific implementation details of the data source.
     """
     
     async def get_payment_requests(self) -> List[PaymentRequest]:
         """
-        Get a list of payment requests from the spreadsheet.
+        Retrieve all pending payment requests from the repository.
         
         Returns:
             List of PaymentRequest objects containing request data
         """
         ...
 
-class GoogleSheetsService:
+class GoogleSheetsPaymentRequestRepository:
     """
-    Implementation of ISheetsService using Google Sheets API.
+    Repository implementation using Google Sheets as the data source.
     
-    This service handles:
-    1. Authentication with Google Sheets API
-    2. Reading data from the spreadsheet
-    3. Error handling for API operations
+    This implementation:
+    1. Handles Google Sheets API authentication
+    2. Retrieves and parses payment request data
+    3. Converts raw data into PaymentRequest objects
     """
     
     def __init__(self, config: GoogleSheetsConfig):
         """
-        Initialize the Google Sheets service.
+        Initialize the repository with Google Sheets configuration.
         
         Args:
             config: Google Sheets configuration containing credentials and spreadsheet ID
@@ -49,11 +49,11 @@ class GoogleSheetsService:
             )
             self._service = build("sheets", "v4", credentials=creds)
         except Exception as e:
-            raise RuntimeError(f"Failed to initialize Google Sheets service: {str(e)}")
+            raise RuntimeError(f"Failed to initialize Google Sheets repository: {str(e)}")
     
     async def get_payment_requests(self) -> List[PaymentRequest]:
         """
-        Get a list of payment requests from the spreadsheet.
+        Retrieve all pending payment requests from the Google Sheets spreadsheet.
         
         This method:
         1. Reads data from the configured spreadsheet
@@ -68,7 +68,7 @@ class GoogleSheetsService:
             - status: Request status
             
         Raises:
-            RuntimeError: If the service is not initialized
+            RuntimeError: If the repository is not properly initialized
             HttpError: If there's an error with the Google Sheets API
         """
         try:

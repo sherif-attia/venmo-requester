@@ -2,7 +2,7 @@ from typing import Protocol
 from magic_di import Connectable, DependencyInjector
 from app.models.config import AppConfig
 from app.services.email_service import IEmailService, GmailService
-from app.services.sheets_service import ISheetsService, GoogleSheetsService
+from app.services.sheets_service import IPaymentRequestRepository, GoogleSheetsPaymentRequestRepository
 from app.services.venmo_service import IVenmoService, VenmoAPIService
 
 class ServiceContainer(Connectable):
@@ -21,7 +21,7 @@ class ServiceContainer(Connectable):
         # Bind interfaces to their implementations
         self._injector.bind({
             IEmailService: GmailService,
-            ISheetsService: GoogleSheetsService,
+            IPaymentRequestRepository: GoogleSheetsPaymentRequestRepository,
             IVenmoService: VenmoAPIService
         })
 
@@ -39,9 +39,9 @@ class ServiceContainer(Connectable):
         return self._injector.inject(IEmailService)(self.config.email)
 
     @property
-    def sheets_service(self) -> ISheetsService:
-        """Get the sheets service instance with sheets config"""
-        return self._injector.inject(ISheetsService)(self.config.google_sheets)
+    def payment_request_repository(self) -> IPaymentRequestRepository:
+        """Get the payment request repository instance with sheets config"""
+        return self._injector.inject(IPaymentRequestRepository)(self.config.google_sheets)
         
     @property
     def venmo_service(self) -> IVenmoService:

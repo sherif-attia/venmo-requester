@@ -8,7 +8,7 @@ from app.models.config import AppConfig, VenmoConfig, EmailConfig, GoogleSheetsC
 from app.models.payment import PaymentRequest
 from app.services.container import ServiceContainer
 from app.services.email_service import IEmailService
-from app.services.sheets_service import ISheetsService
+from app.services.sheets_service import IPaymentRequestRepository
 from app.services.venmo_service import IVenmoService
 
 # Load environment variables from .env file
@@ -69,11 +69,11 @@ async def main():
         
         # Get services from container
         email_service: IEmailService = container.email_service
-        sheets_service: ISheetsService = container.sheets_service
+        payment_request_repository: IPaymentRequestRepository = container.payment_request_repository
         venmo_service: IVenmoService = container.venmo_service
         
         # Process pending requests
-        pending_requests = await sheets_service.get_payment_requests()
+        pending_requests = await payment_request_repository.get_payment_requests()
         logger.info(f"Found {len(pending_requests)} pending requests")
         
         for request in pending_requests:
