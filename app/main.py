@@ -76,6 +76,7 @@ async def main():
         pending_requests = await payment_request_repository.get_payment_requests()
         logger.info(f"Found {len(pending_requests)} pending requests")
         
+        successful_requests = []
         for request in pending_requests:
             try:
                 # Request payment from each user
@@ -86,17 +87,26 @@ async def main():
                 )
                 if success:
                     logger.info(f"Successfully requested payment from {request.user_id}")
+                    successful_requests.append(request)
                 else:
                     logger.warning(f"Failed to request payment from {request.user_id}")
             except Exception as e:
                 logger.error(f"Error processing request for {request.user_id}: {str(e)}")
                 email_service.send_error_notification(e, f"processing request for {request.user_id}")
+        
+        # Send success report if we processed any requests
+        if successful_requests:
+            email_service.send_success_report(successful_requests)
 
     except Exception as e:
         logger.error(f"Error in main: {str(e)}")
+        # Only try to send error notification if we have a container
         if 'container' in locals():
-            await container.__disconnect__()
-            container.email_service.send_error_notification(e, "main execution")
+            try:
+                container.email_service.send_error_notification(e, "main execution")
+            except Exception as email_error:
+                # If we can't send the error email, at least log it
+                logger.error(f"Failed to send error notification: {str(email_error)}")
 
 if __name__ == "__main__":
     # Run the main function using asyncio

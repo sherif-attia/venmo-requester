@@ -1,5 +1,5 @@
 from typing import Protocol, List, Optional
-import aiohttp
+import httpx
 from app.models.config import VenmoConfig
 from app.models.payment import PaymentRequest
 
@@ -90,19 +90,20 @@ class VenmoAPIService:
             }
             
             # Make API request
-            async with aiohttp.ClientSession() as session:
-                async with session.post(
+            async with httpx.AsyncClient() as client:
+                response = await client.post(
                     f"{self.base_url}/payments",
                     headers=self.headers,
                     json=data
-                ) as response:
-                    if response.status == 200:
-                        return True
-                    else:
-                        error_data = await response.json()
-                        raise RuntimeError(f"Venmo API error: {error_data.get('message', 'Unknown error')}")
+                )
+                
+                if response.status_code == 200:
+                    return True
+                else:
+                    error_data = response.json()
+                    raise RuntimeError(f"Venmo API error: {error_data.get('message', 'Unknown error')}")
                         
-        except aiohttp.ClientError as e:
+        except httpx.HTTPError as e:
             raise RuntimeError(f"Network error while making Venmo request: {str(e)}")
         except Exception as e:
             raise RuntimeError(f"Unexpected error while making Venmo request: {str(e)}")
