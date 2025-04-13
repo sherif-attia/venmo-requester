@@ -55,7 +55,7 @@ jobs:
 
       - name: Lint code
         run: |
-          uv run ruff check --output-format=github
+          ~/.local/bin/uv run ruff check --output-format=github
 
   test:
     needs: [setup, lint]
@@ -75,4 +75,4 @@ jobs:
 
       - name: Run tests
         run: |
-          uv run pytest
+          ~/.local/bin/uv run pytest
