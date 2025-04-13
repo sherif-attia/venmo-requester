@@ -32,10 +32,10 @@ addopts = [
     "--cov",
     "--cov-branch",
     "--cov-report=term-missing",
-    "--cov-report=html:.test_coverage/coverage_html",
-    "--cov-report=json:.test_coverage/coverage.json",
-    "--cov-report=lcov:.test_coverage/coverage.lcov",
     "--cov-report=xml:.test_coverage/coverage.xml",
+    "--cov-report=html:.test_coverage/coverage_html",
+    # "--cov-report=json:.test_coverage/coverage.json",
+    # "--cov-report=lcov:.test_coverage/coverage.lcov",
 ]
 
 [tool.coverage.run]
