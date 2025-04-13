@@ -2,14 +2,25 @@ name: continuous delivery
 
 on:
   workflow_run:
-    workflows: ["continuous integration"]
+    workflows: [continuous integration]
     types:
       - completed
     branches:
       - main
 
 jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug Trigger
+        run: |
+          echo "This workflow was triggered!"
+          echo "Event type: ${{ github.event_name }}"
+          echo "Workflow that triggered this: ${{ github.event.workflow.name }}"
+          echo "Conclusion: ${{ github.event.workflow_run.conclusion }}"
+
   release:
+    needs: debug
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     concurrency:
