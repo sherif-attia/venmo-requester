@@ -51,8 +51,8 @@ class GoogleSheetsPaymentRequestRepository:
         1. Reads data from the configured spreadsheet
         2. Parses the data into PaymentRequest objects
         3. Filters requests based on current date and frequency:
-           - Monthly requests: processed on the specified day of the month
-           - Yearly requests: processed on the specified month and day
+            - Monthly requests: processed on the specified day of the month
+            - Yearly requests: processed on the specified month and day
 
         Returns:
             list[PaymentRequest]: List of PaymentRequest objects that should be processed today

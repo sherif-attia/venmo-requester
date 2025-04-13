@@ -9,7 +9,7 @@ dependencies = [
     "google-auth>=2.38.0",
     "google-auth-oauthlib>=1.2.1",
     "magic-di>=0.3.0",
-    "pydantic>=2.11.3",
+    "pydantic[email]>=2.11.3",
     "python-dotenv>=1.1.0",
     "yagmail[all]>=0.15.293",
 ]

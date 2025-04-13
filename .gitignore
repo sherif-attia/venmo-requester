@@ -11,7 +11,7 @@ credentials.json
 __pycache__/
 
 # Coverage reports
-.coverage
+.test_coverage/
 
 # Pytest cache
 .pytest_cache/
