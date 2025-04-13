@@ -16,6 +16,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "coverage[toml]>=7.8.0",
     "pytest>=8.3.5",
     "pytest-cov>=6.1.1",
     "pytest-mock>=3.14.0",
@@ -25,6 +26,7 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
+python_functions = ["it_should_*"]
 addopts = [
     "-v",
     "--cov",
@@ -35,7 +37,6 @@ addopts = [
     "--cov-report=lcov:.test_coverage/coverage.lcov",
     "--cov-report=xml:.test_coverage/coverage.xml",
 ]
-asyncio_default_fixture_loop_scope = "function"
 
 [tool.coverage.run]
 data_file = ".test_coverage/.coverage"
