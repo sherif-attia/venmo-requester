@@ -27,7 +27,6 @@ def create_config() -> AppConfig:
     Returns:
         AppConfig instance with all configurations loaded
     """
-    
     return AppConfig(
         venmo=VenmoConfig(
             access_token=os.getenv("VENMO_ACCESS_TOKEN"),
