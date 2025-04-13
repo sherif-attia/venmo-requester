@@ -29,8 +29,8 @@ jobs:
 
       - name: Lint code
         run: |
-          ruff check --output-format=github
+          uv run ruff check --output-format=github
 
       - name: Run tests
         run: |
-          pytest
+          uv run pytest
