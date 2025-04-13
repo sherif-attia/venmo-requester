@@ -1,6 +1,7 @@
 from typing import Protocol, List, Optional
-import httpx
+import aiohttp
 from app.models.config import VenmoConfig
+from app.models.payment import PaymentRequest
 
 class IVenmoService(Protocol):
     """
@@ -12,15 +13,15 @@ class IVenmoService(Protocol):
     
     async def request_payment(self, user_id: str, amount: float, note: str) -> bool:
         """
-        Request payment from a Venmo user.
+        Request a payment from a Venmo user.
         
         Args:
-            user_id: Venmo user ID to request payment from
-            amount: Amount to request (positive number)
-            note: Message to accompany the payment request
+            user_id: The Venmo user ID to request payment from
+            amount: The amount to request
+            note: A note to include with the payment request
             
         Returns:
-            bool: True if request was successful, False otherwise
+            bool: True if the request was successful, False otherwise
         """
         ...
     
@@ -32,119 +33,89 @@ class IVenmoService(Protocol):
         """Get list of pending payment requests"""
         ...
 
-class VenmoAPIService(IVenmoService):
+class VenmoAPIService:
     """
-    Implementation of IVenmoService using the Venmo API.
+    Implementation of Venmo service using the Venmo API.
     
     This service handles:
     1. Authentication with Venmo API
     2. Making payment requests
-    3. Error handling and response processing
+    3. Error handling for API operations
     """
     
     def __init__(self, config: VenmoConfig):
         """
-        Initialize the Venmo API service.
+        Initialize the Venmo API service with configuration.
         
         Args:
-            config: Venmo configuration containing access token and other settings
+            config: Venmo configuration containing API credentials
         """
         self.config = config
-        self._client = None  # Will be initialized in __connect__
-    
-    async def __connect__(self):
-        """
-        Initialize the HTTP client for making API requests.
-        
-        This is called by the dependency injector when the service is first accessed.
-        """
-        self._client = httpx.AsyncClient()
-    
-    async def __disconnect__(self):
-        """
-        Clean up the HTTP client.
-        
-        This is called by the dependency injector when the service is being disposed.
-        """
-        if self._client:
-            await self._client.aclose()
+        self.base_url = "https://api.venmo.com/v1"
+        self.headers = {
+            "Authorization": f"Bearer {config.access_token}",
+            "Content-Type": "application/json"
+        }
     
     async def request_payment(self, user_id: str, amount: float, note: str) -> bool:
         """
-        Request payment from a Venmo user.
+        Request a payment from a Venmo user using the Venmo API.
         
         This method:
-        1. Converts the positive amount to negative (required by Venmo API)
+        1. Formats the payment request data
         2. Makes an authenticated request to the Venmo API
-        3. Handles the response and any potential errors
+        3. Handles the API response
         
         Args:
-            user_id: Venmo user ID to request payment from
-            amount: Amount to request (positive number)
-            note: Message to accompany the payment request
+            user_id: The Venmo user ID to request payment from
+            amount: The amount to request
+            note: A note to include with the payment request
             
         Returns:
-            bool: True if request was successful, False otherwise
+            bool: True if the request was successful, False otherwise
             
         Raises:
-            VenmoAPIError: If there's an error with the API request
-            RuntimeError: If the client is not initialized
+            RuntimeError: If there's an error with the Venmo API
         """
-        if not self._client:
-            raise RuntimeError("Venmo client not initialized")
-        
-        # Convert amount to negative for payment request
-        request_amount = -abs(amount)
-        
         try:
-            response = await self._client.post(
-                "https://api.venmo.com/v1/payments",
-                headers={
-                    "Authorization": f"Bearer {self.config.access_token}",
-                    "Content-Type": "application/json"
-                },
-                json={
-                    "user_id": user_id,
-                    "amount": request_amount,
-                    "note": note,
-                    "audience": "private"  # Keep requests private by default
-                }
-            )
+            # Convert amount to negative for Venmo API
+            venmo_amount = -abs(amount)
             
-            if response.status_code == 200:
-                data = response.json()
-                return data.get("data", {}).get("payment", {}).get("status") == "pending"
-            else:
-                error_data = response.json()
-                raise VenmoAPIError(f"Venmo API error: {error_data}")
-        except httpx.HTTPError as e:
-            raise VenmoAPIError(f"Network error: {str(e)}")
+            # Prepare request data
+            data = {
+                "user_id": user_id,
+                "amount": venmo_amount,
+                "note": note,
+                "audience": "private"
+            }
+            
+            # Make API request
+            async with aiohttp.ClientSession() as session:
+                async with session.post(
+                    f"{self.base_url}/payments",
+                    headers=self.headers,
+                    json=data
+                ) as response:
+                    if response.status == 200:
+                        return True
+                    else:
+                        error_data = await response.json()
+                        raise RuntimeError(f"Venmo API error: {error_data.get('message', 'Unknown error')}")
+                        
+        except aiohttp.ClientError as e:
+            raise RuntimeError(f"Network error while making Venmo request: {str(e)}")
         except Exception as e:
-            raise VenmoAPIError(f"Unexpected error: {str(e)}")
+            raise RuntimeError(f"Unexpected error while making Venmo request: {str(e)}")
     
     async def get_user_id(self, username: str) -> Optional[str]:
         """Get Venmo user ID from username"""
-        if not self._client:
-            raise RuntimeError("Venmo client not initialized")
-        
-        try:
-            # TODO: Implement actual Venmo API call
-            return None
-        except Exception as e:
-            # TODO: Handle specific Venmo API errors
-            raise
+        # TODO: Implement actual Venmo API call
+        return None
     
     async def get_pending_requests(self) -> List[dict]:
         """Get list of pending payment requests"""
-        if not self._client:
-            raise RuntimeError("Venmo client not initialized")
-        
-        try:
-            # TODO: Implement actual Venmo API call
-            return []
-        except Exception as e:
-            # TODO: Handle specific Venmo API errors
-            raise 
+        # TODO: Implement actual Venmo API call
+        return []
 
 class VenmoAPIError(Exception):
     """

@@ -1,5 +1,4 @@
 from typing import Protocol, List
-import yagmail
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -15,22 +14,28 @@ class IEmailService(Protocol):
     must provide these methods with the specified signatures.
     """
     
-    def send_success_report(self, payments: List[PaymentRequest]) -> None:
-        """Send a report of successful payment requests"""
-        ...
     def send_error_notification(self, error: Exception, context: str) -> None:
         """
         Send an error notification email.
         
         Args:
             error: The exception that occurred
-            context: Description of where/why the error occurred
+            context: Additional context about where the error occurred
+        """
+        ...
+        
+    def send_success_report(self, payments: List[PaymentRequest]) -> None:
+        """
+        Send a report of successful payment requests.
+        
+        Args:
+            payments: List of successful payment requests to report
         """
         ...
 
-class GmailService(IEmailService):
+class GmailService:
     """
-    Implementation of IEmailService using Gmail SMTP.
+    Implementation of email service using Gmail SMTP.
     
     This service handles:
     1. SMTP connection management
@@ -40,66 +45,97 @@ class GmailService(IEmailService):
     
     def __init__(self, config: EmailConfig):
         """
-        Initialize the Gmail service.
+        Initialize the Gmail service with email configuration.
         
         Args:
-            config: Email configuration containing SMTP credentials and settings
+            config: Email configuration containing SMTP credentials
         """
         self.config = config
-        self._smtp = None  # Will be initialized when needed
+        self.smtp_server = "smtp.gmail.com"
+        self.smtp_port = 587
     
-    def _ensure_connected(self):
-        """
-        Ensure SMTP connection is established.
-        
-        Creates a new connection if one doesn't exist.
-        """
-        if not self._smtp:
-            self._smtp = smtplib.SMTP("smtp.gmail.com", 587)
-            self._smtp.starttls()
-            self._smtp.login(self.config.smtp_user, self.config.smtp_app_password)
-    
-    def send_success_report(self, payments: List[PaymentRequest]) -> None:
-        """Send a report of successful payment requests"""
-        subject = "Venmo Auto-Request: Monthly Report"
-        contents = [
-            "Monthly Venmo requests have been sent:",
-            *[f"- {p.venmo_id}: ${p.amount} for {p.note}" for p in payments]
-        ]
-        self._smtp.send_message(self.config.notification_email, subject, contents)
-
     def send_error_notification(self, error: Exception, context: str) -> None:
         """
-        Send an error notification email.
+        Send an error notification email using Gmail SMTP.
         
         This method:
-        1. Creates a formatted error message
-        2. Establishes SMTP connection if needed
-        3. Sends the email to the configured notification address
+        1. Creates a multipart email message
+        2. Sets up the email content with error details
+        3. Connects to Gmail SMTP server
+        4. Sends the email
         
         Args:
             error: The exception that occurred
-            context: Description of where/why the error occurred
+            context: Additional context about where the error occurred
+            
+        Raises:
+            RuntimeError: If there's an error sending the email
         """
         try:
-            self._ensure_connected()
-            
+            # Create message
             msg = MIMEMultipart()
-            msg["From"] = self.config.smtp_user
-            msg["To"] = self.config.notification_email
-            msg["Subject"] = f"Error in {context}"
+            msg['From'] = self.config.smtp_user
+            msg['To'] = self.config.notification_email
+            msg['Subject'] = f"Error in Venmo Auto Request: {context}"
             
+            # Create email body
             body = f"""
-            An error occurred in {context}:
+            An error occurred in the Venmo Auto Request application:
             
-            Error Type: {type(error).__name__}
-            Error Message: {str(error)}
+            Context: {context}
+            Error: {str(error)}
+            Type: {type(error).__name__}
             """
             
-            msg.attach(MIMEText(body, "plain"))
+            msg.attach(MIMEText(body, 'plain'))
             
-            self._smtp.send_message(msg)
+            # Send email
+            with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
+                server.starttls()
+                server.login(self.config.smtp_user, self.config.smtp_app_password)
+                server.send_message(msg)
+                
         except Exception as e:
-            # If we can't send the error email, at least log it
-            print(f"Failed to send error email: {str(e)}")
-            raise 
+            raise RuntimeError(f"Failed to send error notification email: {str(e)}")
+            
+    def send_success_report(self, payments: List[PaymentRequest]) -> None:
+        """
+        Send a report of successful payment requests using Gmail SMTP.
+        
+        This method:
+        1. Creates a multipart email message
+        2. Sets up the email content with payment details
+        3. Connects to Gmail SMTP server
+        4. Sends the email
+        
+        Args:
+            payments: List of successful payment requests to report
+            
+        Raises:
+            RuntimeError: If there's an error sending the email
+        """
+        try:
+            # Create message
+            msg = MIMEMultipart()
+            msg['From'] = self.config.smtp_user
+            msg['To'] = self.config.notification_email
+            msg['Subject'] = "Venmo Auto Request: Success Report"
+            
+            # Create email body
+            body = """
+            The following payment requests were successfully sent:
+            
+            """
+            for payment in payments:
+                body += f"- {payment.user_id}: ${payment.amount:.2f} for {payment.note}\n"
+            
+            msg.attach(MIMEText(body, 'plain'))
+            
+            # Send email
+            with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
+                server.starttls()
+                server.login(self.config.smtp_user, self.config.smtp_app_password)
+                server.send_message(msg)
+                
+        except Exception as e:
+            raise RuntimeError(f"Failed to send success report email: {str(e)}") 
