@@ -1,8 +1,11 @@
+# Standard library imports
 from decimal import Decimal
+from enum import Enum
+
+# Third-party imports
 from pydantic import BaseModel, Field, validator, condecimal
 import re
 from datetime import datetime
-from enum import Enum
 
 class PaymentFrequency(str, Enum):
     """Enumeration of possible payment frequencies"""

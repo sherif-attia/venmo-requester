@@ -1,7 +1,8 @@
-from pydantic import BaseModel, EmailStr, SecretStr, FilePath
+# Standard library imports
 from pathlib import Path
-import os
-from dotenv import load_dotenv
+
+# Third-party imports
+from pydantic import BaseModel, Field
 
 class VenmoConfig(BaseModel):
     """

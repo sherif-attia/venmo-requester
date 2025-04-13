@@ -1,7 +1,9 @@
+# Standard library imports
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+# Local application imports
 from app.models.config import EmailConfig
 from app.models.payment import PaymentRequest
 from . import IEmailService
