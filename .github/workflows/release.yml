@@ -1,13 +1,17 @@
-name: cd
+name: continuous delivery
 
 on:
-  push:
+  workflow_run:
+    workflows: ["continuous integration"]
+    types:
+      - completed
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   release:
+    # Only run if the CI workflow succeeded
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-release-${{ github.ref_name }}
@@ -81,10 +85,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           git_committer_name: "github-actions"
           git_committer_email: "actions@users.noreply.github.com"
-
-      - name: Publish | Upload package to PyPI
-        uses: pypa/gh-action-pypi-publish@v1
-        if: steps.release.outputs.released == 'true'
 
       - name: Publish | Upload to GitHub Release Assets
         uses: python-semantic-release/publish-action@v9.21.0
