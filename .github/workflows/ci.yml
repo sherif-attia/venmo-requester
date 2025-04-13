@@ -17,7 +17,7 @@ jobs:
         uses: ./.github/actions/setup-python
 
       - name: Lint code
-        run: uv run ruff check --output-format=github
+        uses: ./.github/actions/lint
 
   test:
     needs: [lint]
@@ -30,4 +30,4 @@ jobs:
         uses: ./.github/actions/setup-python
 
       - name: Run tests
-        run: uv run pytest
+        uses: ./.github/actions/test

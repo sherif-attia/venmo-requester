@@ -1,0 +1,9 @@
+name: 'Run tests with pytest'
+description: 'Run pytest on the codebase'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run tests
+      shell: bash
+      run: uv run pytest
