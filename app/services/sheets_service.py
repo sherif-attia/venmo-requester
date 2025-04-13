@@ -7,7 +7,7 @@ from googleapiclient.errors import HttpError
 from app.models.payment import PaymentRequest
 from app.models.config import GoogleSheetsConfig
 
-class SheetsService(Protocol):
+class ISheetsService(Protocol):
     """
     Interface defining the contract for Google Sheets service implementations.
     
@@ -26,7 +26,7 @@ class SheetsService(Protocol):
 
 class GoogleSheetsService:
     """
-    Implementation of SheetsService using Google Sheets API.
+    Implementation of ISheetsService using Google Sheets API.
     
     This service handles:
     1. Authentication with Google Sheets API
@@ -72,27 +72,32 @@ class GoogleSheetsService:
             HttpError: If there's an error with the Google Sheets API
         """
         try:
-            # Get the values from the first sheet
+            # Read data from the spreadsheet
             result = self._service.spreadsheets().values().get(
                 spreadsheetId=self.config.spreadsheet_id,
-                range='A:C'  # Columns A (venmo_id), B (note), C (amount)
+                range="A:D"  # Assuming columns A-D contain the relevant data
             ).execute()
             
             values = result.get("values", [])
             if not values:
                 return []
-
-            # Skip header row and process data
-            return [
-                PaymentRequest(
-                    venmo_id=row[0],
-                    note=row[1],
-                    amount=row[2]
-                )
-                for row in values[1:]  # Skip header row
-            ]
-
+            
+            # Convert to list of PaymentRequest objects
+            headers = values[0]
+            requests = []
+            for row in values[1:]:
+                if len(row) >= len(headers):
+                    data = dict(zip(headers, row))
+                    if data.get("status", "").lower() == "pending":
+                        requests.append(PaymentRequest(
+                            user_id=data["user_id"],
+                            amount=float(data["amount"]),
+                            note=data["note"]
+                        ))
+            
+            return requests
+            
         except HttpError as e:
-            raise RuntimeError(f"Failed to fetch data from Google Sheets: {str(e)}")
+            raise RuntimeError(f"Google Sheets API error: {str(e)}")
         except Exception as e:
-            raise RuntimeError(f"Unexpected error while fetching payment requests: {str(e)}") 
+            raise RuntimeError(f"Unexpected error: {str(e)}") 

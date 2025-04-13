@@ -7,7 +7,7 @@ from email.mime.multipart import MIMEMultipart
 from app.models.payment import PaymentRequest
 from app.models.config import EmailConfig
 
-class EmailService(Protocol):
+class IEmailService(Protocol):
     """
     Interface defining the contract for email service implementations.
     
@@ -28,9 +28,9 @@ class EmailService(Protocol):
         """
         ...
 
-class GmailService(EmailService):
+class GmailService(IEmailService):
     """
-    Implementation of EmailService using Gmail SMTP.
+    Implementation of IEmailService using Gmail SMTP.
     
     This service handles:
     1. SMTP connection management

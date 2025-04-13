@@ -2,7 +2,7 @@ from typing import Protocol, List, Optional
 import httpx
 from app.models.config import VenmoConfig
 
-class VenmoService(Protocol):
+class IVenmoService(Protocol):
     """
     Interface defining the contract for Venmo service implementations.
     
@@ -32,9 +32,9 @@ class VenmoService(Protocol):
         """Get list of pending payment requests"""
         ...
 
-class VenmoAPIService(VenmoService):
+class VenmoAPIService(IVenmoService):
     """
-    Implementation of VenmoService using the Venmo API.
+    Implementation of IVenmoService using the Venmo API.
     
     This service handles:
     1. Authentication with Venmo API

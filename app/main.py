@@ -7,9 +7,9 @@ import asyncio
 from app.models.config import AppConfig, VenmoConfig, EmailConfig, GoogleSheetsConfig
 from app.models.payment import PaymentRequest
 from app.services.container import ServiceContainer
-from app.services.email_service import EmailService
-from app.services.sheets_service import SheetsService
-from app.services.venmo_service import VenmoService
+from app.services.email_service import IEmailService
+from app.services.sheets_service import ISheetsService
+from app.services.venmo_service import IVenmoService
 
 # Load environment variables from .env file
 load_dotenv()
@@ -68,9 +68,9 @@ async def main():
         await container.__connect__()
         
         # Get services from container
-        email_service = container.email_service
-        sheets_service = container.sheets_service
-        venmo_service = container.venmo_service
+        email_service: IEmailService = container.email_service
+        sheets_service: ISheetsService = container.sheets_service
+        venmo_service: IVenmoService = container.venmo_service
         
         # Process pending requests
         pending_requests = await sheets_service.get_payment_requests()

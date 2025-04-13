@@ -1,9 +1,9 @@
 from typing import Protocol
 from magic_di import Connectable, DependencyInjector
 from app.models.config import AppConfig
-from app.services.email_service import EmailService, GmailService
-from app.services.sheets_service import SheetsService, GoogleSheetsService
-from app.services.venmo_service import VenmoService, VenmoAPIService
+from app.services.email_service import IEmailService, GmailService
+from app.services.sheets_service import ISheetsService, GoogleSheetsService
+from app.services.venmo_service import IVenmoService, VenmoAPIService
 
 class ServiceContainer(Connectable):
     """
@@ -20,9 +20,9 @@ class ServiceContainer(Connectable):
         self._injector = DependencyInjector()
         # Bind interfaces to their implementations
         self._injector.bind({
-            EmailService: GmailService,
-            SheetsService: GoogleSheetsService,
-            VenmoService: VenmoAPIService
+            IEmailService: GmailService,
+            ISheetsService: GoogleSheetsService,
+            IVenmoService: VenmoAPIService
         })
 
     async def __connect__(self):
@@ -34,16 +34,16 @@ class ServiceContainer(Connectable):
         await self._injector.disconnect()
 
     @property
-    def email_service(self) -> EmailService:
+    def email_service(self) -> IEmailService:
         """Get the email service instance with email config"""
-        return self._injector.inject(EmailService)(self.config.email)
+        return self._injector.inject(IEmailService)(self.config.email)
 
     @property
-    def sheets_service(self) -> SheetsService:
+    def sheets_service(self) -> ISheetsService:
         """Get the sheets service instance with sheets config"""
-        return self._injector.inject(SheetsService)(self.config.google_sheets)
+        return self._injector.inject(ISheetsService)(self.config.google_sheets)
         
     @property
-    def venmo_service(self) -> VenmoService:
+    def venmo_service(self) -> IVenmoService:
         """Get the Venmo service instance with Venmo config"""
-        return self._injector.inject(VenmoService)(self.config.venmo) 
+        return self._injector.inject(IVenmoService)(self.config.venmo) 
