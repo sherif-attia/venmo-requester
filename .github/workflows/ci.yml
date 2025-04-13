@@ -27,12 +27,11 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
-      - name: Upload environment and code
+      - name: Upload workspace
         uses: actions/upload-artifact@v4
         with:
           name: workspace
-          path: |
-            .
+          path: ${{ github.workspace }}
           retention-days: 1
 
   lint:
@@ -43,10 +42,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: workspace
-          path: .
+          path: ${{ github.workspace }}
 
       - name: Lint code
         run: |
+          cd ${{ github.workspace }}
           uv run ruff check --output-format=github
 
   test:
@@ -57,8 +57,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: workspace
-          path: .
+          path: ${{ github.workspace }}
 
       - name: Run tests
         run: |
+          cd ${{ github.workspace }}
           uv run pytest
