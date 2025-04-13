@@ -44,6 +44,13 @@ jobs:
           name: workspace
           path: ${{ github.workspace }}
 
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: latest
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
       - name: Lint code
         run: |
           cd ${{ github.workspace }}
