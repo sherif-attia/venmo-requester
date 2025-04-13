@@ -52,9 +52,7 @@ jobs:
           cache-dependency-glob: uv.lock
 
       - name: Lint code
-        run: |
-          cd ${{ github.workspace }}
-          uv run ruff check --output-format=github
+        run: uv run ruff check --output-format=github
 
   test:
     needs: [setup, lint]
