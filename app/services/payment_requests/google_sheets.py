@@ -1,28 +1,11 @@
-from typing import Protocol, List
 from google.oauth2.credentials import Credentials
 from google.oauth2.service_account import Credentials as ServiceAccountCredentials
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-from app.models.payment import PaymentRequest
 from app.models.config import GoogleSheetsConfig
-
-class IPaymentRequestRepository(Protocol):
-    """
-    Repository interface for payment request data access.
-    
-    This protocol defines the contract for accessing payment request data,
-    abstracting away the specific implementation details of the data source.
-    """
-    
-    async def get_payment_requests(self) -> List[PaymentRequest]:
-        """
-        Retrieve all pending payment requests from the repository.
-        
-        Returns:
-            List of PaymentRequest objects containing request data
-        """
-        ...
+from app.models.payment import PaymentRequest
+from . import IPaymentRequestRepository
 
 class GoogleSheetsPaymentRequestRepository:
     """
@@ -51,7 +34,7 @@ class GoogleSheetsPaymentRequestRepository:
         except Exception as e:
             raise RuntimeError(f"Failed to initialize Google Sheets repository: {str(e)}")
     
-    async def get_payment_requests(self) -> List[PaymentRequest]:
+    async def get_payment_requests(self) -> list[PaymentRequest]:
         """
         Retrieve all pending payment requests from the Google Sheets spreadsheet.
         
@@ -61,7 +44,7 @@ class GoogleSheetsPaymentRequestRepository:
         3. Filters for pending requests
         
         Returns:
-            List of PaymentRequest objects containing:
+            list[PaymentRequest]: List of PaymentRequest objects containing:
             - user_id: Venmo user ID
             - amount: Payment amount
             - note: Payment note

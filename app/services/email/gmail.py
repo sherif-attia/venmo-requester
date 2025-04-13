@@ -1,37 +1,11 @@
-from typing import Protocol, List
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from typing import List
 
-from app.models.payment import PaymentRequest
 from app.models.config import EmailConfig
-
-class IEmailService(Protocol):
-    """
-    Interface defining the contract for email service implementations.
-    
-    This protocol ensures that any implementation of the email service
-    must provide these methods with the specified signatures.
-    """
-    
-    def send_error_notification(self, error: Exception, context: str) -> None:
-        """
-        Send an error notification email.
-        
-        Args:
-            error: The exception that occurred
-            context: Additional context about where the error occurred
-        """
-        ...
-        
-    def send_success_report(self, payments: List[PaymentRequest]) -> None:
-        """
-        Send a report of successful payment requests.
-        
-        Args:
-            payments: List of successful payment requests to report
-        """
-        ...
+from app.models.payment import PaymentRequest
+from . import IEmailService
 
 class GmailService:
     """

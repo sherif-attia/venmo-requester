@@ -1,9 +1,9 @@
 from typing import Protocol
 from magic_di import Connectable, DependencyInjector
 from app.models.config import AppConfig
-from app.services.email_service import IEmailService, GmailService
-from app.services.sheets_service import IPaymentRequestRepository, GoogleSheetsPaymentRequestRepository
-from app.services.venmo_service import IVenmoService, VenmoAPIService
+from app.services.email import IEmailService, GmailService
+from app.services.venmo import IVenmoService, VenmoAPIService
+from app.services.payment_requests import IPaymentRequestRepository, GoogleSheetsPaymentRequestRepository
 
 class ServiceContainer(Connectable):
     """
