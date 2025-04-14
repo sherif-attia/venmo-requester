@@ -38,3 +38,15 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: .test_coverage/.coverage.xml
+
+      - name: Trigger Release Workflow
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'release.yml',
+              ref: 'main'
+            })
