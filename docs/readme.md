@@ -5,10 +5,11 @@
 > Auto-request money from friends based on a Google Sheet.
 
 [![ci](https://github.com/sherifattia/venmo-auto-requester/actions/workflows/ci.yml/badge.svg)](https://github.com/sherifattia/venmo-auto-requester/actions/workflows/ci.yml)
-![version](https://img.shields.io/badge/release-0.1.0-blue)
+![version](https://img.shields.io/badge/continuous_delivery-v0.1.0-blue)
 [![coverage](https://codecov.io/gh/sherifattia/venmo-auto-requester/graph/badge.svg?token=4G33EVU2LH)](https://codecov.io/gh/sherifattia/venmo-auto-requester)
-![python](https://img.shields.io/badge/python-3.13-blue)
-![uv](https://img.shields.io/badge/build-uv-blueviolet)
+![python](https://img.shields.io/badge/python-3.13-blue?logo=python&logoColor=ffdd54)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+
 
 </div>
 
