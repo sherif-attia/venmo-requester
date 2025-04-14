@@ -9,8 +9,7 @@ from app.models.payment import PaymentRequest
 
 
 class GmailService:
-    """
-    Implementation of email service using Gmail SMTP.
+    """Implementation of email service using Gmail SMTP.
 
     This service handles:
     1. SMTP connection management
@@ -19,8 +18,7 @@ class GmailService:
     """
 
     def __init__(self, config: EmailConfig):
-        """
-        Initialize the Gmail service with email configuration.
+        """Initialize the Gmail service with email configuration.
 
         Args:
             config: Email configuration containing SMTP credentials
@@ -30,8 +28,7 @@ class GmailService:
         self.smtp_port = 587
 
     def send_error_notification(self, error: Exception, context: str) -> None:
-        """
-        Send an error notification email using Gmail SMTP.
+        """Send an error notification email using Gmail SMTP.
 
         This method:
         1. Creates a multipart email message
@@ -58,7 +55,7 @@ class GmailService:
             An error occurred in the Venmo Auto Request application:
 
             Context: {context}
-            Error: {str(error)}
+            Error: {error!s}
             Type: {type(error).__name__}
             """
 
@@ -71,11 +68,10 @@ class GmailService:
                 server.send_message(msg)
 
         except Exception as e:
-            raise RuntimeError(f"Failed to send error notification email: {str(e)}")
+            raise RuntimeError(f"Failed to send error notification email: {e!s}")
 
     def send_success_report(self, payments: list[PaymentRequest]) -> None:
-        """
-        Send a report of successful payment requests using Gmail SMTP.
+        """Send a report of successful payment requests using Gmail SMTP.
 
         This method:
         1. Creates a multipart email message
@@ -113,4 +109,4 @@ class GmailService:
                 server.send_message(msg)
 
         except Exception as e:
-            raise RuntimeError(f"Failed to send success report email: {str(e)}")
+            raise RuntimeError(f"Failed to send success report email: {e!s}")

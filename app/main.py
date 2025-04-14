@@ -16,8 +16,7 @@ load_dotenv()
 
 
 def create_config() -> AppConfig:
-    """
-    Create application configuration from environment variables.
+    """Create application configuration from environment variables.
 
     This function:
     1. Loads environment variables from .env file
@@ -47,8 +46,7 @@ def create_config() -> AppConfig:
 
 
 async def main():
-    """
-    Main application entry point.
+    """Main application entry point.
 
     This function:
     1. Sets up logging
@@ -83,7 +81,9 @@ async def main():
             try:
                 # Request payment from each user
                 success = await venmo_service.request_payment(
-                    user_id=request.user_id, amount=request.amount, note=request.note
+                    user_id=request.user_id,
+                    amount=request.amount,
+                    note=request.note,
                 )
                 if success:
                     logger.info(f"Successfully requested payment from {request.user_id}")
@@ -91,9 +91,10 @@ async def main():
                 else:
                     logger.warning(f"Failed to request payment from {request.user_id}")
             except Exception as e:
-                logger.error(f"Error processing request for {request.user_id}: {str(e)}")
+                logger.error(f"Error processing request for {request.user_id}: {e!s}")
                 email_service.send_error_notification(
-                    e, f"processing request for {request.user_id}"
+                    e,
+                    f"processing request for {request.user_id}",
                 )
 
         # Send success report if we processed any requests
@@ -101,14 +102,14 @@ async def main():
             email_service.send_success_report(successful_requests)
 
     except Exception as e:
-        logger.error(f"Error in main: {str(e)}")
+        logger.error(f"Error in main: {e!s}")
         # Only try to send error notification if we have a container
         if "container" in locals():
             try:
                 container.email_service.send_error_notification(e, "main execution")
             except Exception as email_error:
                 # If we can't send the error email, at least log it
-                logger.error(f"Failed to send error notification: {str(email_error)}")
+                logger.error(f"Failed to send error notification: {email_error!s}")
 
 
 if __name__ == "__main__":

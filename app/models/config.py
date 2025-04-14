@@ -2,8 +2,7 @@ from pydantic import BaseModel, EmailStr, FilePath, SecretStr
 
 
 class VenmoConfig(BaseModel):
-    """
-    Configuration for Venmo API access.
+    """Configuration for Venmo API access.
 
     Attributes:
         access_token: OAuth access token for Venmo API
@@ -17,8 +16,7 @@ class VenmoConfig(BaseModel):
 
 
 class EmailConfig(BaseModel):
-    """
-    Configuration for email notifications.
+    """Configuration for email notifications.
 
     Attributes:
         smtp_user: Gmail address for sending emails
@@ -32,8 +30,7 @@ class EmailConfig(BaseModel):
 
 
 class GoogleSheetsConfig(BaseModel):
-    """
-    Configuration for Google Sheets access.
+    """Configuration for Google Sheets access.
 
     Attributes:
         credentials_path: Path to Google service account credentials JSON file
@@ -45,8 +42,7 @@ class GoogleSheetsConfig(BaseModel):
 
 
 class AppConfig(BaseModel):
-    """
-    Main application configuration.
+    """Main application configuration.
 
     This class combines all service-specific configurations
     into a single configuration object.

@@ -10,8 +10,7 @@ from app.services.venmo import IVenmoService, VenmoAPIService
 
 
 class ServiceContainer(Connectable):
-    """
-    Container class that manages service instances using magic-di.
+    """Container class that manages service instances using magic-di.
 
     This container:
     1. Configures which interfaces map to which implementations
@@ -28,7 +27,7 @@ class ServiceContainer(Connectable):
                 IEmailService: GmailService,
                 IPaymentRequestRepository: GoogleSheetsPaymentRequestRepository,
                 IVenmoService: VenmoAPIService,
-            }
+            },
         )
 
     async def __connect__(self):

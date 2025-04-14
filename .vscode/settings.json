@@ -1,6 +1,10 @@
 {
   "extensions.ignoreRecommendations": false,
 
+  // Indent Rainbow settings
+  "indentRainbow.excludedLanguages": ["python"],
+
+
   // Auto-format settings
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,

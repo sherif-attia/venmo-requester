@@ -2,16 +2,14 @@ from typing import Protocol
 
 
 class IVenmoService(Protocol):
-    """
-    Interface defining the contract for Venmo service implementations.
+    """Interface defining the contract for Venmo service implementations.
 
     This protocol ensures that any implementation of the Venmo service
     must provide these methods with the specified signatures.
     """
 
     async def request_payment(self, user_id: str, amount: float, note: str) -> bool:
-        """
-        Request a payment from a Venmo user.
+        """Request a payment from a Venmo user.
 
         Args:
             user_id: The Venmo user ID to request payment from
@@ -24,8 +22,7 @@ class IVenmoService(Protocol):
         ...
 
     async def get_user_id(self, username: str) -> str | None:
-        """
-        Get Venmo user ID from username.
+        """Get Venmo user ID from username.
 
         Args:
             username: The Venmo username to look up
@@ -36,8 +33,7 @@ class IVenmoService(Protocol):
         ...
 
     async def get_pending_requests(self) -> list[dict]:
-        """
-        Get list of pending payment requests.
+        """Get list of pending payment requests.
 
         Returns:
             list[dict]: List of pending payment requests

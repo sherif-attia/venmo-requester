@@ -16,8 +16,7 @@ REQUIRED_COLUMNS = 5  # venmo_id, note, amount, frequency, payment_date
 
 
 class GoogleSheetsPaymentRequestRepository:
-    """
-    Repository implementation using Google Sheets as the data source.
+    """Repository implementation using Google Sheets as the data source.
 
     This implementation:
     1. Handles Google Sheets API authentication
@@ -27,8 +26,7 @@ class GoogleSheetsPaymentRequestRepository:
     """
 
     def __init__(self, config: GoogleSheetsConfig):
-        """
-        Initialize the repository with Google Sheets configuration.
+        """Initialize the repository with Google Sheets configuration.
 
         Args:
             config: Google Sheets configuration containing credentials and spreadsheet ID
@@ -41,11 +39,10 @@ class GoogleSheetsPaymentRequestRepository:
             )
             self._service = build("sheets", "v4", credentials=creds)
         except Exception as e:
-            raise RuntimeError(f"Failed to initialize Google Sheets repository: {str(e)}")
+            raise RuntimeError(f"Failed to initialize Google Sheets repository: {e!s}")
 
     async def get_payment_requests(self) -> list[PaymentRequest]:
-        """
-        Retrieve payment requests that should be processed today from the Google Sheets spreadsheet.
+        """Retrieve payment requests that should be processed today from the Google Sheets spreadsheet.
 
         This method:
         1. Reads data from the configured spreadsheet
@@ -118,6 +115,6 @@ class GoogleSheetsPaymentRequestRepository:
             return payment_requests
 
         except HttpError as e:
-            raise RuntimeError(f"Google Sheets API error: {str(e)}")
+            raise RuntimeError(f"Google Sheets API error: {e!s}")
         except Exception as e:
-            raise RuntimeError(f"Unexpected error: {str(e)}")
+            raise RuntimeError(f"Unexpected error: {e!s}")
