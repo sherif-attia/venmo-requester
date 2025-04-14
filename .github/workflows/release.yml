@@ -9,7 +9,7 @@ on:
 
 jobs:
   release:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-release-${{ github.workflow }}-${{ github.ref_name }}
@@ -29,12 +29,12 @@ jobs:
       - name: Setup | Checkout Repository on Release Branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
+          ref: ${{ github.event.workflow_run.head_branch }}
           fetch-depth: 0
 
       - name: Setup | Force release branch to be at workflow sha
         run: |
-          git reset --hard ${{ github.sha }}
+          git reset --hard ${{ github.event.workflow_run.head_sha }}
 
       - name: Evaluate | Verify upstream has NOT changed
         # Last chance to abort before causing an error as another PR/push was applied to
