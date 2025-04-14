@@ -5,14 +5,10 @@
 > Auto-request money from friends based on a Google Sheet.
 
 [![ci](https://github.com/sherifattia/venmo-auto-requester/actions/workflows/ci.yml/badge.svg)](https://github.com/sherifattia/venmo-auto-requester/actions/workflows/ci.yml)
-![version](https://img.shields.io/badge/continuous_delivery-v0.1.0-blue)
+![version](https://img.shields.io/badge/release-v0.1.0-success?logo=github)
 [![coverage](https://codecov.io/gh/sherifattia/venmo-auto-requester/graph/badge.svg?token=4G33EVU2LH)](https://codecov.io/gh/sherifattia/venmo-auto-requester)
 <br>
-![python](https://img.shields.io/badge/python-3.13-blue?logo=python&logoColor=white)
-![python](https://img.shields.io/badge/-poetry-blue?logo=poetry&logoColor=white)
-![python](https://img.shields.io/badge/.%20-uv-blue?logo=uv&logoColor=white)
-[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
-
+![python](https://img.shields.io/badge/python-3.13-success?logo=python&logoColor=white)
 
 </div>
 
@@ -25,7 +21,6 @@
 | donald-trump-$$$    | 📺 YouTube Premium     | $125   | Monthly   | 10            |
 | barack-obama        | 💳 Costco Membership   | $100   | Yearly    | 04-20         |
 | bill-clinton-69     | 🍿 Netflix Family Plan | $75    | Yearly    | 09-12         |
-
 
 ## ⏰ Schedule
 
