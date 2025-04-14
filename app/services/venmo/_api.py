@@ -7,8 +7,7 @@ HTTP_OK = 200
 
 
 class VenmoAPIService:
-    """
-    Implementation of Venmo service using the Venmo API.
+    """Implementation of Venmo service using the Venmo API.
 
     This service handles:
     1. Authentication with Venmo API
@@ -17,8 +16,7 @@ class VenmoAPIService:
     """
 
     def __init__(self, config: VenmoConfig):
-        """
-        Initialize the Venmo API service with configuration.
+        """Initialize the Venmo API service with configuration.
 
         Args:
             config: Venmo configuration containing API credentials
@@ -31,8 +29,7 @@ class VenmoAPIService:
         }
 
     async def request_payment(self, user_id: str, amount: float, note: str) -> bool:
-        """
-        Request a payment from a Venmo user using the Venmo API.
+        """Request a payment from a Venmo user using the Venmo API.
 
         This method:
         1. Formats the payment request data
@@ -60,25 +57,23 @@ class VenmoAPIService:
             # Make API request
             async with httpx.AsyncClient() as client:
                 response = await client.post(
-                    f"{self.base_url}/payments", headers=self.headers, json=data
+                    f"{self.base_url}/payments", headers=self.headers, json=data,
                 )
 
                 if response.status_code == httpx.codes.OK:
                     return True
-                else:
-                    error_data = response.json()
-                    raise RuntimeError(
-                        f"Venmo API error: {error_data.get('message', 'Unknown error')}"
-                    )
+                error_data = response.json()
+                raise RuntimeError(
+                    f"Venmo API error: {error_data.get('message', 'Unknown error')}",
+                )
 
         except httpx.HTTPError as e:
-            raise RuntimeError(f"Network error while making Venmo request: {str(e)}")
+            raise RuntimeError(f"Network error while making Venmo request: {e!s}")
         except Exception as e:
-            raise RuntimeError(f"Unexpected error while making Venmo request: {str(e)}")
+            raise RuntimeError(f"Unexpected error while making Venmo request: {e!s}")
 
     async def get_user_id(self, username: str) -> str | None:
-        """
-        Get Venmo user ID from username.
+        """Get Venmo user ID from username.
 
         Args:
             username: The Venmo username to look up
@@ -90,8 +85,7 @@ class VenmoAPIService:
         return None
 
     async def get_pending_requests(self) -> list[dict]:
-        """
-        Get list of pending payment requests.
+        """Get list of pending payment requests.
 
         Returns:
             list[dict]: List of pending payment requests
