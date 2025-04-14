@@ -42,7 +42,7 @@ class GoogleSheetsPaymentRequestRepository:
             raise RuntimeError(f"Failed to initialize Google Sheets repository: {e!s}")
 
     async def get_payment_requests(self) -> list[PaymentRequest]:
-        """Retrieve payment requests that should be processed today from the Google Sheets spreadsheet.
+        """Retrieve payment requests that should be processed today from Google Sheets.
 
         This method:
         1. Reads data from the configured spreadsheet
