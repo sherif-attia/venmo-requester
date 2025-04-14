@@ -7,7 +7,6 @@
 [![ci](https://github.com/sherifattia/venmo-auto-requester/actions/workflows/ci.yml/badge.svg)](https://github.com/sherifattia/venmo-auto-requester/actions/workflows/ci.yml)
 ![version](https://img.shields.io/badge/release-v0.1.0-success?logo=github)
 [![coverage](https://codecov.io/gh/sherifattia/venmo-auto-requester/graph/badge.svg?token=4G33EVU2LH)](https://codecov.io/gh/sherifattia/venmo-auto-requester)
-<br>
 ![python](https://img.shields.io/badge/python-3.13-success?logo=python&logoColor=white)
 
 </div>
