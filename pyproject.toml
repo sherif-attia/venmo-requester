@@ -48,7 +48,17 @@ line-length = 100
 indent-width = 4
 
 [tool.ruff.lint]
-select = ["ALL"] # Enable all rules
+select = [
+    # https://docs.astral.sh/ruff/rules/
+    "I",  # isort
+    "F",  # pyflakes
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "C4", # flake8-comprehensions
+    "Q",  # flake8-quotes
+    "N",  # pep8-naming
+    "PL", # Pylint
+]
 ignore = [
     "TC001", # interface imports
 ]
