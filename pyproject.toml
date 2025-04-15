@@ -1,0 +1,93 @@
+[project]
+name = "venmo-auto-request"
+version = "0.1.0"
+description = "auto request money from friends"
+readme = "docs/readme.md"
+requires-python = ">=3.13"
+dependencies = [
+    "google-api-python-client>=2.166.0",
+    "google-auth>=2.38.0",
+    "google-auth-oauthlib>=1.2.1",
+    "magic-di>=0.3.0",
+    "pydantic[email]>=2.11.3",
+    "python-dotenv>=1.1.0",
+    "yagmail[all]>=0.15.293",
+]
+
+[dependency-groups]
+dev = [
+    "coverage[toml]>=7.8.0",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+    "pytest-mock>=3.14.0",
+    "ruff>=0.11.5",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["it_should_*"]
+addopts = [
+    "-v",
+    "--cov",
+    "--cov-branch",
+    "--cov-report=term-missing",
+    "--cov-report=xml:.test_coverage/coverage.xml",
+    "--cov-report=html:.test_coverage/coverage_html",
+    # "--cov-report=json:.test_coverage/coverage.json",
+    # "--cov-report=lcov:.test_coverage/coverage.lcov",
+]
+
+[tool.coverage.run]
+data_file = ".test_coverage/.coverage"
+branch = true
+source = ["app"]
+
+[tool.ruff]
+line-length = 100
+indent-width = 4
+
+[tool.ruff.lint]
+select = [
+    # https://docs.astral.sh/ruff/rules/
+    "I",  # isort
+    "F",  # pyflakes
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "C4", # flake8-comprehensions
+    "Q",  # flake8-quotes
+    "N",  # pep8-naming
+    "PL", # Pylint
+]
+ignore = [
+    "TC001", # interface imports
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version:nf"]
+version_variables = ["docs/readme.md:badge/release-:tf"]
+commit_message = "v{version}"
+commit_parser_options = { patch_tags = [
+    "fix",
+    "release",
+], allowed_tags = [
+    "feat",
+    "fix",
+    "release",
+    "chore",
+    "docs",
+    "style",
+    "refactor",
+] }
+changelog.template_dir = ".github/changelog_template"

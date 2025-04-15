@@ -1,0 +1,20 @@
+# .env contains sensitive configuration and secrets
+.env
+
+# Python virtual environment directory
+.venv/
+
+# Google Sheets credentials
+credentials.json
+
+# Python cache
+__pycache__/
+
+# Coverage reports
+.test_coverage/
+
+# Pytest cache
+.pytest_cache/
+
+# Ruff cache
+.ruff_cache/

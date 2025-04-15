@@ -1,0 +1,60 @@
+{
+  "extensions.ignoreRecommendations": false,
+
+  // Indent Rainbow settings
+  "indentRainbow.excludedLanguages": ["python"],
+
+
+  // Auto-format settings
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "editor.codeActionsOnSave": {
+    "source.convertImportFormat": "always",
+    "source.unusedImports": "always",
+    "source.fixAll.pylance": "always",
+    "source.fixAll": "always",
+    "source.organizeImports.ruff": "always",
+    "source.fixAll.ruff": "always"
+  },
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+
+  // Don't show these directories
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.test_coverage": true,
+    "**/.ruff_cache": true
+  },
+
+  // Better terminal experience for Windows
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+
+  // Formatting
+  "[json][jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+
+  // Python settings
+  "python.analysis.autoSearchPaths": true,
+  "python.envFile": "${workspaceFolder}/.env",
+  "python.terminal.activateEnvironment": true,
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/",
+
+  // Python testing settings
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.autoTestDiscoverOnSaveEnabled": true,
+
+  // Spell check settings
+  "cSpell.words": ["asyncio", "condecimal", "dotenv", "Venmo"]
+}

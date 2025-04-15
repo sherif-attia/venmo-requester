@@ -1,0 +1,21 @@
+{
+  "recommendations": [
+    "aaron-bond.better-comments",
+    "bierner.github-markdown-preview",
+    "charliermarsh.ruff",
+    "davidanson.vscode-markdownlint",
+    "donjayamanne.githistory",
+    "esbenp.prettier-vscode",
+    "github.vscode-github-actions",
+    "mechatroner.rainbow-csv",
+    "mhutchie.git-graph",
+    "mikestead.dotenv",
+    "ms-azuretools.vscode-docker",
+    "ms-python.python",
+    "oderwat.indent-rainbow",
+    "redhat.vscode-yaml",
+    "streetsidesoftware.code-spell-checker",
+    "tamasfe.even-better-toml",
+    "ryanluker.vscode-coverage-gutters"
+  ]
+}

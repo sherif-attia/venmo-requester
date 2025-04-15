@@ -1,0 +1,84 @@
+name: continuous delivery
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-release-${{ github.workflow }}-${{ github.ref_name }}
+      cancel-in-progress: false
+
+    permissions:
+      id-token: write
+      contents: write
+
+    steps:
+      - name: Wait for CI to complete
+        run: |
+          set -e
+
+          # Maximum wait time (5 minutes)
+          MAX_WAIT=300
+          WAIT_INTERVAL=30
+          ELAPSED=0
+
+          while [ $ELAPSED -lt $MAX_WAIT ]; do
+            echo "Checking CI status..."
+
+            # Get the latest CI workflow run for this commit
+            CI_RUN=$(curl -s \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=main&event=push&status=completed" \
+              | jq -r '.workflow_runs[0]')
+
+            CI_STATUS=$(echo "$CI_RUN" | jq -r '.conclusion')
+            CI_SHA=$(echo "$CI_RUN" | jq -r '.head_sha')
+
+            echo "Latest CI run status: $CI_STATUS"
+            echo "Latest CI run SHA: $CI_SHA"
+            echo "Current SHA: ${{ github.sha }}"
+
+            if [ "$CI_SHA" = "${{ github.sha }}" ]; then
+              if [ "$CI_STATUS" = "success" ]; then
+                echo "CI completed successfully!"
+                break
+              elif [ "$CI_STATUS" = "failure" ]; then
+                echo "CI failed!"
+                exit 1
+              fi
+            fi
+
+            echo "CI not yet complete. Waiting $WAIT_INTERVAL seconds..."
+            sleep $WAIT_INTERVAL
+            ELAPSED=$((ELAPSED + WAIT_INTERVAL))
+          done
+
+          if [ $ELAPSED -ge $MAX_WAIT ]; then
+            echo "Timeout waiting for CI to complete"
+            exit 1
+          fi
+
+      - name: Setup | Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Action | Semantic Version Release
+        id: release
+        uses: python-semantic-release/python-semantic-release@v9.21.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          git_committer_name: "github-actions[bot]"
+          git_committer_email: "actions[bot]@users.noreply.github.com"
+          changelog: false
+
+      - name: Publish | Upload to GitHub Release Assets
+        uses: python-semantic-release/publish-action@v9.21.0
+        if: steps.release.outputs.released == 'true'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.release.outputs.tag }}

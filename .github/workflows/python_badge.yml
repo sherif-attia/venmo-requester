@@ -1,0 +1,112 @@
+name: "readme: update python badge"
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Run daily
+  push:
+    paths:
+      - ".python-version"
+
+jobs:
+  update-badge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required for pushing changes
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Python Badge
+        run: |
+          set -e  # Exit on any error
+
+          echo "Reading Python version..."
+          PYTHON_VERSION=$(cat .python-version | tr -d '\n')
+          echo "Current Python version: ${PYTHON_VERSION}"
+
+          echo "Fetching version status from endoflife.date..."
+          STATUS_JSON=$(curl -s "https://endoflife.date/api/python/${PYTHON_VERSION}.json")
+          echo "API Response: ${STATUS_JSON}"
+
+          # Parse support status
+          CURRENT_DATE=$(date -u +"%Y-%m-%d")
+          echo "Current date: ${CURRENT_DATE}"
+
+          if echo "$STATUS_JSON" | jq -e '.support' > /dev/null; then
+            EOL_DATE=$(echo "$STATUS_JSON" | jq -r '.eol')
+            SUPPORT_END=$(echo "$STATUS_JSON" | jq -r '.support')
+            echo "Support end date: ${SUPPORT_END}"
+            echo "EOL date: ${EOL_DATE}"
+
+            if [[ "$CURRENT_DATE" < "$SUPPORT_END" ]]; then
+              # Still in active/stable support
+              STATUS="stable"
+              COLOR="success"
+            elif [[ "$CURRENT_DATE" < "$EOL_DATE" ]]; then
+              # In security support
+              STATUS="security"
+              COLOR="yellow"
+            else
+              # Past EOL
+              STATUS="end-of-life"
+              COLOR="critical"
+            fi
+          else
+            # If version not found or error, mark as unknown/unsupported
+            echo "Warning: Version ${PYTHON_VERSION} not found in endoflife.date API"
+            STATUS="unknown"
+            COLOR="critical"
+          fi
+
+          echo "Determined status: ${STATUS} (${COLOR})"
+
+          # Update badge in README with both version and status
+          NEW_BADGE="[![python](https://img.shields.io/badge/python-${PYTHON_VERSION}%20%7C%20${STATUS}-${COLOR}?logo=python&logoColor=white)](https://devguide.python.org/versions/#full-chart)"
+          echo "New badge: ${NEW_BADGE}"
+
+          # First check what badge currently exists
+          echo "Current badge in README:"
+          grep "^\[!\[python\](https://img.shields.io/badge/python" docs/readme.md || echo "No badge found"
+
+          # Use awk to replace the badge line
+          awk -v new_badge="$NEW_BADGE" '
+            /^\[!\[python\]\(https:\/\/img\.shields\.io\/badge\/python/ {
+              print new_badge
+              next
+            }
+            { print }
+          ' docs/readme.md > docs/readme.md.tmp && mv docs/readme.md.tmp docs/readme.md
+
+          # Verify the replacement by checking for key components
+          if ! grep -q "\[!\[python\].*${PYTHON_VERSION}.*${STATUS}.*${COLOR}.*versions/#full-chart)" docs/readme.md; then
+            echo "Error: Badge was not updated correctly in README.md"
+            echo "Looking for version: ${PYTHON_VERSION}"
+            echo "Looking for status: ${STATUS}"
+            echo "Looking for color: ${COLOR}"
+            exit 1
+          fi
+
+          echo "Badge updated successfully!"
+
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'actions[bot]@users.noreply.github.com'
+
+          # Force git to detect changes
+          git add -f docs/readme.md
+
+          # Check if there are any changes
+          if git status --porcelain | grep -q "docs/readme.md"; then
+            echo "Changes detected, committing..."
+            git commit -m "chore: update python badge status"
+            git push origin HEAD:main
+          else
+            echo "No changes detected"
+            # Show git status for debugging
+            git status
+            echo "Current content of readme.md:"
+            cat docs/readme.md
+          fi

@@ -1,0 +1,9 @@
+name: 'Lint code with ruff'
+description: 'Run ruff linter on the codebase'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Lint code
+      shell: bash
+      run: uv run ruff check --output-format=github
