@@ -1,6 +1,9 @@
 # CHANGELOG
 
 
+## v0.1.4 (2025-04-15)
+
+
 ## v0.1.3 (2025-04-15)
 
 ### Bug Fixes
@@ -11,6 +14,9 @@
 
 - Update GitHub Actions workflow to ensure proper permissions and push changes to main branch
   ([`7077b9e`](https://github.com/sherifattia/venmo-auto-requester/commit/7077b9e834c0ebdf98e74862b439a3a286e2bcb1))
+
+- Update GitHub Actions workflows to use consistent bot naming for commit author and email
+  ([`4f63014`](https://github.com/sherifattia/venmo-auto-requester/commit/4f63014cc17e3565d240fdc8b7ed12441b473732))
 
 ### Chores
 
