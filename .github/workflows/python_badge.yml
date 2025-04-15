@@ -11,8 +11,13 @@ on:
 jobs:
   update-badge:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required for pushing changes
+
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update Python Badge
         run: |
@@ -95,7 +100,7 @@ jobs:
           if git status --porcelain | grep -q "docs/readme.md"; then
             echo "Changes detected, committing..."
             git commit -m "chore: update python badge status"
-            git push
+            git push origin HEAD:main
           else
             echo "No changes detected"
             # Show git status for debugging
