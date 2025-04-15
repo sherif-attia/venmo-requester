@@ -5,8 +5,16 @@ on:
     branches: [main]
 
 jobs:
-  wait-for-ci:
+  release:
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-release-${{ github.workflow }}-${{ github.ref_name }}
+      cancel-in-progress: false
+
+    permissions:
+      id-token: write
+      contents: write
+
     steps:
       - name: Wait for CI to complete
         run: |
@@ -37,7 +45,7 @@ jobs:
             if [ "$CI_SHA" = "${{ github.sha }}" ]; then
               if [ "$CI_STATUS" = "success" ]; then
                 echo "CI completed successfully!"
-                exit 0
+                break
               elif [ "$CI_STATUS" = "failure" ]; then
                 echo "CI failed!"
                 exit 1
@@ -49,27 +57,11 @@ jobs:
             ELAPSED=$((ELAPSED + WAIT_INTERVAL))
           done
 
-          echo "Timeout waiting for CI to complete"
-          exit 1
+          if [ $ELAPSED -ge $MAX_WAIT ]; then
+            echo "Timeout waiting for CI to complete"
+            exit 1
+          fi
 
-  release:
-    needs: wait-for-ci
-    runs-on: ubuntu-latest
-    concurrency:
-      group: ${{ github.workflow }}-release-${{ github.workflow }}-${{ github.ref_name }}
-      cancel-in-progress: false
-
-    permissions:
-      id-token: write
-      contents: write
-
-    steps:
-      # Note: We checkout the repository at the branch that triggered the workflow
-      # with the entire history to ensure to match PSR's release branch detection
-      # and history evaluation.
-      # However, we forcefully reset the branch to the workflow sha because it is
-      # possible that the branch was updated while the workflow was running. This
-      # prevents accidentally releasing un-evaluated changes.
       - name: Setup | Checkout Repository on Release Branch
         uses: actions/checkout@v4
         with:
