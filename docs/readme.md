@@ -5,7 +5,7 @@
 [![ci](https://github.com/sherifattia/venmo-auto-requester/actions/workflows/ci.yml/badge.svg)](https://github.com/sherifattia/venmo-auto-requester/actions/workflows/ci.yml)
 [![version](https://img.shields.io/badge/release-v0.1.0-success?logo=github)](https://github.com/sherifattia/venmo-auto-requester/releases)
 [![coverage](https://codecov.io/gh/sherifattia/venmo-auto-requester/graph/badge.svg?token=4G33EVU2LH)](https://codecov.io/gh/sherifattia/venmo-auto-requester)
-[![python](https://img.shields.io/badge/python-3.12%20%7C%20security-blue?logo=python&logoColor=white)](https://devguide.python.org/versions/#full-chart)
+[![python](https://img.shields.io/badge/python-3.10%20%7C%20security-yellow?logo=python[![python](https://img.shields.io/badge/python-3.12%20%7C%20security-blue?logo=python&logoColor=white)](https://devguide.python.org/versions/#full-chart)logoColor=white[![python](https://img.shields.io/badge/python-3.12%20%7C%20security-blue?logo=python&logoColor=white)](https://devguide.python.org/versions/#full-chart)labelColor=black)](https://devguide.python.org/versions/#full-chart)
 
 <br>
 
