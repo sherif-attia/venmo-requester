@@ -69,31 +69,13 @@ jobs:
 
           # First check what badge currently exists
           echo "Current badge in README:"
-          grep -o "\[!\[python\].*versions/#full-chart)" docs/readme.md || echo "No badge found"
+          grep "^\[!\[python\](https://img.shields.io/badge/python" docs/readme.md || echo "No badge found"
 
-          # Create a temporary file for the new content
-          TEMP_FILE=$(mktemp)
-
-          # Replace the badge using awk to handle the entire line
-          awk -v new_badge="$NEW_BADGE" '
-            /\[!\[python\].*versions\/#full-chart\)/ {
-              print new_badge
-              next
-            }
-            { print }
-          ' docs/readme.md > "$TEMP_FILE"
+          # Replace the line starting with the Python badge
+          sed -i "s|^\[!\[python\](https://img.shields.io/badge/python.*|${NEW_BADGE}|" docs/readme.md
 
           # Verify the replacement
-          if ! grep -q "$NEW_BADGE" "$TEMP_FILE"; then
-            echo "Error: Badge was not updated correctly in temporary file"
-            exit 1
-          fi
-
-          # Replace the original file
-          mv "$TEMP_FILE" docs/readme.md
-
-          # Verify the final file
-          if ! grep -q "$NEW_BADGE" docs/readme.md; then
+          if ! grep -q "^${NEW_BADGE}$" docs/readme.md; then
             echo "Error: Badge was not updated correctly in README.md"
             exit 1
           fi
