@@ -1,7 +1,15 @@
 # CHANGELOG
 
 
+## v0.1.5 (2025-04-15)
+
+
 ## v0.1.4 (2025-04-15)
+
+### Bug Fixes
+
+- Correct Python badge in README.md to properly display version 3.10
+  ([`532ac2d`](https://github.com/sherifattia/venmo-auto-requester/commit/532ac2deab1812581cd3eccdbcc5c66868438f22))
 
 
 ## v0.1.3 (2025-04-15)
