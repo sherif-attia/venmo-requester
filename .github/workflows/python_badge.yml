@@ -75,9 +75,12 @@ jobs:
             exit 1
           fi
 
-          # Verify the replacement worked
-          if ! grep -q "${NEW_BADGE}" docs/readme.md; then
+          # Verify the replacement worked by checking for key components
+          if ! grep -q "\[!\[python\].*${PYTHON_VERSION}.*${STATUS}.*${COLOR}.*versions/#full-chart)" docs/readme.md; then
             echo "Error: Badge was not updated correctly in README.md"
+            echo "Looking for version: ${PYTHON_VERSION}"
+            echo "Looking for status: ${STATUS}"
+            echo "Looking for color: ${COLOR}"
             exit 1
           fi
 
