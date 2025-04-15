@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.3.1 (2025-04-15)
+
+### Bug Fixes
+
+- Enhance badge verification in README.md to check for key components
+  ([`1005278`](https://github.com/sherifattia/venmo-auto-requester/commit/10052780102cde1eb41634eee04d27f9bd922b5f))
+
+
 ## v0.3.0 (2025-04-15)
 
 
