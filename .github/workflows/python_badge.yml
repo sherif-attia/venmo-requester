@@ -74,9 +74,12 @@ jobs:
           # Replace the line starting with the Python badge
           sed -i "s|^\[!\[python\](https://img.shields.io/badge/python.*|${NEW_BADGE}|" docs/readme.md
 
-          # Verify the replacement
-          if ! grep -q "^${NEW_BADGE}$" docs/readme.md; then
+          # Verify the replacement by checking for key components
+          if ! grep -q "\[!\[python\].*${PYTHON_VERSION}.*${STATUS}.*${COLOR}.*versions/#full-chart)" docs/readme.md; then
             echo "Error: Badge was not updated correctly in README.md"
+            echo "Looking for version: ${PYTHON_VERSION}"
+            echo "Looking for status: ${STATUS}"
+            echo "Looking for color: ${COLOR}"
             exit 1
           fi
 
