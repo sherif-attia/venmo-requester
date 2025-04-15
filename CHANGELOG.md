@@ -1,7 +1,15 @@
 # CHANGELOG
 
 
+## v0.3.0 (2025-04-15)
+
+
 ## v0.2.0 (2025-04-15)
+
+### Features
+
+- Add CI wait step to release workflow
+  ([`ba8fbf6`](https://github.com/sherifattia/venmo-auto-requester/commit/ba8fbf6ba52c8b9cd2652822728e7e82a32e80a2))
 
 
 ## v0.1.1 (2025-04-15)
