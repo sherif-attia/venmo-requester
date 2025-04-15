@@ -71,8 +71,8 @@ jobs:
           echo "Current badge in README:"
           grep "^\[!\[python\](https://img.shields.io/badge/python" docs/readme.md || echo "No badge found"
 
-          # Replace the line starting with the Python badge
-          sed -i "s|^\[!\[python\](https://img.shields.io/badge/python.*|${NEW_BADGE}|" docs/readme.md
+          # Replace the entire line starting with the Python badge
+          sed -i "s|^\[!\[python\](https://img.shields.io/badge/python.*$|${NEW_BADGE}|" docs/readme.md
 
           # Verify the replacement by checking for key components
           if ! grep -q "\[!\[python\].*${PYTHON_VERSION}.*${STATUS}.*${COLOR}.*versions/#full-chart)" docs/readme.md; then
