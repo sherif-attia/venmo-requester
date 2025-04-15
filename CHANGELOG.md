@@ -1,6 +1,26 @@
 # CHANGELOG
 
 
+## v0.1.7 (2025-04-15)
+
+### Bug Fixes
+
+- Clarify sed command to replace the entire line for the Python badge in README.md
+  ([`c77c89d`](https://github.com/sherifattia/venmo-auto-requester/commit/c77c89df7304405cb5ba081feb22cad34b9b57b0))
+
+- Correct formatting of Python badge in README.md to ensure proper display
+  ([`d968869`](https://github.com/sherifattia/venmo-auto-requester/commit/d968869728fe491a21eb0b03f6501d63b9a41633))
+
+- Enhance verification of Python badge update in README.md to check for key components including
+  version, status, and color
+  ([`ff45d48`](https://github.com/sherifattia/venmo-auto-requester/commit/ff45d48e1a750f04032803c9390a7c18e7bd2d22))
+
+### Chores
+
+- Update python badge status
+  ([`c8cd07a`](https://github.com/sherifattia/venmo-auto-requester/commit/c8cd07a0a95b6f1d6e7186a3d13bab4b99a9f810))
+
+
 ## v0.1.6 (2025-04-15)
 
 
