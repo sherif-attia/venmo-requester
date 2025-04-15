@@ -1,6 +1,23 @@
 # CHANGELOG
 
 
+## v0.1.3 (2025-04-15)
+
+### Bug Fixes
+
+- Enhance badge update process in README.md by using a temporary file for safer replacements and
+  improved verification
+  ([`2467b8f`](https://github.com/sherifattia/venmo-auto-requester/commit/2467b8f371cae37448815b6d610aa97784fc5baa))
+
+- Update GitHub Actions workflow to ensure proper permissions and push changes to main branch
+  ([`7077b9e`](https://github.com/sherifattia/venmo-auto-requester/commit/7077b9e834c0ebdf98e74862b439a3a286e2bcb1))
+
+### Chores
+
+- Update python badge status
+  ([`18ab5c4`](https://github.com/sherifattia/venmo-auto-requester/commit/18ab5c4cf63b10b029cc414091de0fdbf51334fe))
+
+
 ## v0.1.2 (2025-04-15)
 
 ### Bug Fixes
