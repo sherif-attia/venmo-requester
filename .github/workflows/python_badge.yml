@@ -71,18 +71,30 @@ jobs:
           echo "Current badge in README:"
           grep -o "\[!\[python\].*versions/#full-chart)" docs/readme.md || echo "No badge found"
 
-          # Update the badge regardless of current version
-          if ! sed -i "s|\[!\[python\].*versions/#full-chart)|${NEW_BADGE}|" docs/readme.md; then
-            echo "Error: Failed to update README.md"
+          # Create a temporary file for the new content
+          TEMP_FILE=$(mktemp)
+
+          # Replace the badge using awk to handle the entire line
+          awk -v new_badge="$NEW_BADGE" '
+            /\[!\[python\].*versions\/#full-chart\)/ {
+              print new_badge
+              next
+            }
+            { print }
+          ' docs/readme.md > "$TEMP_FILE"
+
+          # Verify the replacement
+          if ! grep -q "$NEW_BADGE" "$TEMP_FILE"; then
+            echo "Error: Badge was not updated correctly in temporary file"
             exit 1
           fi
 
-          # Verify the replacement worked
-          if ! grep -q "\[!\[python\].*${PYTHON_VERSION}.*${STATUS}.*${COLOR}.*versions/#full-chart)" docs/readme.md; then
+          # Replace the original file
+          mv "$TEMP_FILE" docs/readme.md
+
+          # Verify the final file
+          if ! grep -q "$NEW_BADGE" docs/readme.md; then
             echo "Error: Badge was not updated correctly in README.md"
-            echo "Looking for version: ${PYTHON_VERSION}"
-            echo "Looking for status: ${STATUS}"
-            echo "Looking for color: ${COLOR}"
             exit 1
           fi
 
