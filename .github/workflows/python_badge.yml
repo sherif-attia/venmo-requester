@@ -102,8 +102,8 @@ jobs:
 
       - name: Commit and push if changed
         run: |
-          git config --global user.name 'GitHub Action'
-          git config --global user.email 'action@github.com'
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'actions[bot]@users.noreply.github.com'
 
           # Force git to detect changes
           git add -f docs/readme.md
