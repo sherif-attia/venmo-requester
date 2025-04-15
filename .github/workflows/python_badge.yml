@@ -42,8 +42,8 @@ jobs:
             echo "EOL date: ${EOL_DATE}"
 
             if [[ "$CURRENT_DATE" < "$SUPPORT_END" ]]; then
-              # Still in active/bugfix support
-              STATUS="bugfix"
+              # Still in active/stable support
+              STATUS="stable"
               COLOR="success"
             elif [[ "$CURRENT_DATE" < "$EOL_DATE" ]]; then
               # In security support
@@ -52,13 +52,13 @@ jobs:
             else
               # Past EOL
               STATUS="end-of-life"
-              COLOR="red"
+              COLOR="critical"
             fi
           else
             # If version not found or error, mark as unknown/unsupported
             echo "Warning: Version ${PYTHON_VERSION} not found in endoflife.date API"
             STATUS="unknown"
-            COLOR="red"
+            COLOR="critical"
           fi
 
           echo "Determined status: ${STATUS} (${COLOR})"
