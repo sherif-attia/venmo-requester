@@ -62,20 +62,17 @@ jobs:
           NEW_BADGE="[![python](https://img.shields.io/badge/python-${PYTHON_VERSION}%20%7C%20${STATUS}-${COLOR}?logo=python&logoColor=white)](https://devguide.python.org/versions/#full-chart)"
           echo "New badge: ${NEW_BADGE}"
 
-          # First verify the badge pattern exists
-          if ! grep -q "\[!\[python\].*versions/#full-chart)" docs/readme.md; then
-            echo "Error: Could not find Python badge in README.md"
-            echo "Expected pattern: [![python](...)](https://devguide.python.org/versions/#full-chart)"
-            exit 1
-          fi
+          # First check what badge currently exists
+          echo "Current badge in README:"
+          grep -o "\[!\[python\].*versions/#full-chart)" docs/readme.md || echo "No badge found"
 
-          # Then try to replace it
+          # Update the badge regardless of current version
           if ! sed -i "s|\[!\[python\].*versions/#full-chart)|${NEW_BADGE}|" docs/readme.md; then
             echo "Error: Failed to update README.md"
             exit 1
           fi
 
-          # Verify the replacement worked by checking for key components
+          # Verify the replacement worked
           if ! grep -q "\[!\[python\].*${PYTHON_VERSION}.*${STATUS}.*${COLOR}.*versions/#full-chart)" docs/readme.md; then
             echo "Error: Badge was not updated correctly in README.md"
             echo "Looking for version: ${PYTHON_VERSION}"
@@ -83,6 +80,8 @@ jobs:
             echo "Looking for color: ${COLOR}"
             exit 1
           fi
+
+          echo "Badge updated successfully!"
 
       - name: Commit and push if changed
         run: |
