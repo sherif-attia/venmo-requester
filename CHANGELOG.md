@@ -1,7 +1,16 @@
 # CHANGELOG
 
 
+## v0.1.6 (2025-04-15)
+
+
 ## v0.1.5 (2025-04-15)
+
+### Bug Fixes
+
+- Streamline Python badge update process in README.md by replacing temporary file usage with direct
+  sed command for efficiency
+  ([`8787ab2`](https://github.com/sherifattia/venmo-auto-requester/commit/8787ab26543c497dbda6f256e477d8e9ffdfb0c5))
 
 
 ## v0.1.4 (2025-04-15)
