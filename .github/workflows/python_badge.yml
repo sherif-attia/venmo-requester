@@ -71,11 +71,14 @@ jobs:
           echo "Current badge in README:"
           grep "^\[!\[python\](https://img.shields.io/badge/python" docs/readme.md || echo "No badge found"
 
-          # Escape special characters in the new badge for sed
-          ESCAPED_BADGE=$(echo "$NEW_BADGE" | sed 's/[]\/$*.^|[]/\\&/g')
-
-          # Replace the entire line starting with the Python badge
-          sed -i "s|^\[!\[python\](https://img.shields.io/badge/python.*$|$ESCAPED_BADGE|" docs/readme.md
+          # Use awk to replace the badge line
+          awk -v new_badge="$NEW_BADGE" '
+            /^\[!\[python\]\(https:\/\/img\.shields\.io\/badge\/python/ {
+              print new_badge
+              next
+            }
+            { print }
+          ' docs/readme.md > docs/readme.md.tmp && mv docs/readme.md.tmp docs/readme.md
 
           # Verify the replacement by checking for key components
           if ! grep -q "\[!\[python\].*${PYTHON_VERSION}.*${STATUS}.*${COLOR}.*versions/#full-chart)" docs/readme.md; then
