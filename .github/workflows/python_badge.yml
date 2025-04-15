@@ -59,11 +59,25 @@ jobs:
           echo "Determined status: ${STATUS} (${COLOR})"
 
           # Update badge in README with both version and status
-          NEW_BADGE="[![Python](https://img.shields.io/badge/python-${PYTHON_VERSION}%20%7C%20${STATUS}-${COLOR}?logo=python&logoColor=white)](https://devguide.python.org/versions/#full-chart)"
+          NEW_BADGE="[![python](https://img.shields.io/badge/python-${PYTHON_VERSION}%20%7C%20${STATUS}-${COLOR}?logo=python&logoColor=white)](https://devguide.python.org/versions/#full-chart)"
           echo "New badge: ${NEW_BADGE}"
 
-          if ! sed -i "s|!\[Python\].*versions/#full-chart)|${NEW_BADGE}|" docs/readme.md; then
+          # First verify the badge pattern exists
+          if ! grep -q "\[!\[python\].*versions/#full-chart)" docs/readme.md; then
+            echo "Error: Could not find Python badge in README.md"
+            echo "Expected pattern: [![python](...)](https://devguide.python.org/versions/#full-chart)"
+            exit 1
+          fi
+
+          # Then try to replace it
+          if ! sed -i "s|\[!\[python\].*versions/#full-chart)|${NEW_BADGE}|" docs/readme.md; then
             echo "Error: Failed to update README.md"
+            exit 1
+          fi
+
+          # Verify the replacement worked
+          if ! grep -q "${NEW_BADGE}" docs/readme.md; then
+            echo "Error: Badge was not updated correctly in README.md"
             exit 1
           fi
 
