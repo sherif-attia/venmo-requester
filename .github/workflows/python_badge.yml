@@ -64,7 +64,7 @@ jobs:
           echo "Determined status: ${STATUS} (${COLOR})"
 
           # Update badge in README with both version and status
-          NEW_BADGE="[![python](https://img.shields.io/badge/python-${PYTHON_VERSION}%20%7C%20${STATUS}-${COLOR}?logo=python&logoColor=white&labelColor=black)](https://devguide.python.org/versions/#full-chart)"
+          NEW_BADGE="[![python](https://img.shields.io/badge/python-${PYTHON_VERSION}%20%7C%20${STATUS}-${COLOR}?logo=python&logoColor=white)](https://devguide.python.org/versions/#full-chart)"
           echo "New badge: ${NEW_BADGE}"
 
           # First check what badge currently exists
