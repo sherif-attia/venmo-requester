@@ -1,0 +1,58 @@
+name: Update Python Badge
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Run daily
+  push:
+    paths:
+      - ".python-version"
+
+jobs:
+  update-badge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update Python Badge
+        run: |
+          PYTHON_VERSION=$(cat .python-version | tr -d '\n')
+
+          # Fetch Python version status from endoflife.date API
+          STATUS_JSON=$(curl -s "https://endoflife.date/api/python/${PYTHON_VERSION}.json")
+
+          # Parse support status
+          CURRENT_DATE=$(date -u +"%Y-%m-%d")
+
+          if echo "$STATUS_JSON" | jq -e '.support' > /dev/null; then
+            EOL_DATE=$(echo "$STATUS_JSON" | jq -r '.eol')
+            SUPPORT_END=$(echo "$STATUS_JSON" | jq -r '.support')
+
+            if [[ "$CURRENT_DATE" < "$SUPPORT_END" ]]; then
+              # Still in active/bugfix support
+              STATUS="bugfix"
+              COLOR="success"
+            elif [[ "$CURRENT_DATE" < "$EOL_DATE" ]]; then
+              # In security support
+              STATUS="security"
+              COLOR="yellow"
+            else
+              # Past EOL
+              STATUS="end-of-life"
+              COLOR="red"
+            fi
+          else
+            # If version not found or error, mark as unknown/unsupported
+            STATUS="unknown"
+            COLOR="red"
+          fi
+
+          # Update badge in README with both version and status
+          NEW_BADGE="[![Python](https://img.shields.io/badge/python-${PYTHON_VERSION}%20%7C%20${STATUS}-${COLOR}?logo=python&logoColor=white)](https://devguide.python.org/versions/#full-chart)"
+          sed -i "s|!\[Python\].*versions/#full-chart)|${NEW_BADGE}|" docs/readme.md
+
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add docs/readme.md
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: update python badge status" && git push)
