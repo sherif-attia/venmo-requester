@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## v0.1.2 (2025-04-15)
+
+### Bug Fixes
+
+- Enhance badge update process by forcing git to detect changes and adding debugging output
+  ([`27d205d`](https://github.com/sherifattia/venmo-auto-requester/commit/27d205de68edbc0a7c80f4734fc35495b982601f))
+
+
 ## v0.1.1 (2025-04-15)
 
 ### Bug Fixes
