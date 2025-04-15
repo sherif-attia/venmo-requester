@@ -87,12 +87,19 @@ jobs:
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git add docs/readme.md
 
-          if ! git diff --quiet && ! git diff --staged --quiet; then
+          # Force git to detect changes
+          git add -f docs/readme.md
+
+          # Check if there are any changes
+          if git status --porcelain | grep -q "docs/readme.md"; then
             echo "Changes detected, committing..."
             git commit -m "chore: update python badge status"
             git push
           else
             echo "No changes detected"
+            # Show git status for debugging
+            git status
+            echo "Current content of readme.md:"
+            cat docs/readme.md
           fi
