@@ -1,6 +1,9 @@
 # CHANGELOG
 
 
+## v0.2.0 (2025-04-15)
+
+
 ## v0.1.1 (2025-04-15)
 
 ### Bug Fixes
@@ -21,6 +24,11 @@
 
 - Set up semantic releases ([#4](https://github.com/sherifattia/venmo-auto-requester/pull/4),
   [`ccfd72a`](https://github.com/sherifattia/venmo-auto-requester/commit/ccfd72a6b4817c0852869ee13a3ff905cdbfeb1c))
+
+### Features
+
+- Python badge
+  ([`f471af8`](https://github.com/sherifattia/venmo-auto-requester/commit/f471af81dbaf492d73c6f8a8bd8a95619a99dfa9))
 
 
 ## v0.1.0 (2025-04-13)
