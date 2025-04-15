@@ -1,6 +1,15 @@
 # CHANGELOG
 
 
+## v0.1.1 (2025-04-15)
+
+### Bug Fixes
+
+- Improve badge update process in README.md by checking current badge and ensuring successful
+  replacement
+  ([`3634697`](https://github.com/sherifattia/venmo-auto-requester/commit/3634697ad94a3974a0116e531154d9ed0aedd4c2))
+
+
 ## v0.1.0 (2025-04-15)
 
 ### Bug Fixes
