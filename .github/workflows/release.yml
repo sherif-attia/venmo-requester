@@ -1,15 +1,59 @@
 name: continuous delivery
 
 on:
-  workflow_run:
-    workflows: ["continuous integration"]
+  push:
     branches: [main]
-    types:
-      - completed
 
 jobs:
+  wait-for-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for CI to complete
+        run: |
+          set -e
+
+          # Maximum wait time (30 minutes)
+          MAX_WAIT=1800
+          WAIT_INTERVAL=30
+          ELAPSED=0
+
+          while [ $ELAPSED -lt $MAX_WAIT ]; do
+            echo "Checking CI status..."
+
+            # Get the latest CI workflow run for this commit
+            CI_RUN=$(curl -s \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/${{ github.repository }}/actions/runs?branch=main&event=push&status=completed" \
+              | jq -r '.workflow_runs[0]')
+
+            CI_STATUS=$(echo "$CI_RUN" | jq -r '.conclusion')
+            CI_SHA=$(echo "$CI_RUN" | jq -r '.head_sha')
+
+            echo "Latest CI run status: $CI_STATUS"
+            echo "Latest CI run SHA: $CI_SHA"
+            echo "Current SHA: ${{ github.sha }}"
+
+            if [ "$CI_SHA" = "${{ github.sha }}" ]; then
+              if [ "$CI_STATUS" = "success" ]; then
+                echo "CI completed successfully!"
+                exit 0
+              elif [ "$CI_STATUS" = "failure" ]; then
+                echo "CI failed!"
+                exit 1
+              fi
+            fi
+
+            echo "CI not yet complete. Waiting $WAIT_INTERVAL seconds..."
+            sleep $WAIT_INTERVAL
+            ELAPSED=$((ELAPSED + WAIT_INTERVAL))
+          done
+
+          echo "Timeout waiting for CI to complete"
+          exit 1
+
   release:
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main' }}
+    needs: wait-for-ci
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-release-${{ github.workflow }}-${{ github.ref_name }}
@@ -29,12 +73,12 @@ jobs:
       - name: Setup | Checkout Repository on Release Branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_branch }}
+          ref: ${{ github.ref_name }}
           fetch-depth: 0
 
       - name: Setup | Force release branch to be at workflow sha
         run: |
-          git reset --hard ${{ github.event.workflow_run.head_sha }}
+          git reset --hard ${{ github.sha }}
 
       - name: Evaluate | Verify upstream has NOT changed
         # Last chance to abort before causing an error as another PR/push was applied to
