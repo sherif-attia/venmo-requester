@@ -1,6 +1,6 @@
 <div align="center">
 
-# venmo-auto-requester <br> 🤖🗓️💰
+# venmo-requester <br> 🤖🗓️💰
 
 [![ci](https://github.com/sherifattia/venmo-auto-requester/actions/workflows/ci.yml/badge.svg)](https://github.com/sherifattia/venmo-auto-requester/actions/workflows/ci.yml)
 [![version](https://img.shields.io/badge/release-v0.1.0-success?logo=github)](https://github.com/sherifattia/venmo-auto-requester/releases)
