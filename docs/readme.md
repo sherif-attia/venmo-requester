@@ -2,9 +2,9 @@
 
 # venmo-requester <br> 🤖🗓️💰
 
-[![ci](https://github.com/sherifattia/venmo-requester/actions/workflows/ci.yml/badge.svg)](https://github.com/sherifattia/venmo-requester/actions/workflows/ci.yml)
+[![ci](https://img.shields.io/github/actions/workflow/status/sherifattia/venmo-requester/ci.yml?branch=main&label=ci&logo=github)](https://github.com/sherifattia/venmo-requester/actions/workflows/ci.yml)
 [![version](https://img.shields.io/github/v/release/sherifattia/venmo-requester?color=success&logo=github)](https://github.com/sherifattia/venmo-requester/releases)
-[![coverage](https://codecov.io/gh/sherifattia/venmo-requester/graph/badge.svg?token=4G33EVU2LH)](https://codecov.io/gh/sherifattia/venmo-requester)
+[![coverage](https://img.shields.io/codecov/c/github/sherifattia/venmo-requester?logo=codecov&logoColor=white)](https://codecov.io/gh/sherifattia/venmo-requester)
 [![python](https://img.shields.io/badge/python-3.13%20%7C%20stable-success?logo=python&logoColor=white)](https://devguide.python.org/versions/#full-chart)
 
 <br>
